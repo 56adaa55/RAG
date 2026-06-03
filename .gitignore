@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project data (large temp/binary files)
+temp/*.pdf
+temp/*.txt
+01-loaded-docs/
+01-chunked-docs/
+02-embedded-docs/
+03-vector-store/
+04-search-results/
+05-generation-results/
+06-evaluation-result/
+07-comparison-results/
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
