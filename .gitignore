@@ -9,7 +9,7 @@ __pycache__/
 
 # Node
 frontend/dist/
-dist/
+/dist/
 
 # 环境变量 / 密钥（OPENAI_API_KEY、DASHSCOPE_API_KEY、DEEPSEEK_API_KEY 等）
 .env
