@@ -115,12 +115,27 @@ HF_MODEL_PATH=/path/to/your/local/huggingface/models
 
 **1. 前端增加功能**（frontend/src/）
 ```javascript
-// 建议添加的功能（选一项）：
-- 检索结果可视化组件（高亮关键词）
-- 多模型对比展示组件
-- 检索历史记录组件
-- 文档上传进度组件
-- 参数调优面板组件
+new_feature：新增前端“检索效果评估”页，并接入导航
+- 改动位置：
+-- 新页面：Evaluation.jsx (line 1)
+-- 新路由 /evaluation：App.jsx (line 12)
+-- 侧边栏入口“检索效果评估”：Sidebar.jsx (line 16)
+
+- 页面功能：
+-- 上传评估 CSV 文件
+-- 选择向量库 provider 和 collection
+-- 设置 top_k、相似性阈值
+-- 调用后端 /evaluate
+-- 展示平均命中分、平均找回分、有效查询数
+-- 展示每条 query 的 expected pages、found pages、score hit、score find
+
+
+fix：修复后端 /evaluate 接口的检索结果解析逻辑
+- 在 backend/main.py (line 783) 中兼容新的搜索返回结构，从 search_response["results"] 中提取检索结果。
+- 页码解析兼容 metadata.page 和 metadata.page_number 两种字段。
+- 对无效页码做容错，避免单条结果导致整行评估失败。
+- 保持原有输出结构不变，仍返回 results、average_scores、total_queries 和 parameters。
+
 ```
 
 **2. 文件解析细化**（backend/services/parsing_service.py）

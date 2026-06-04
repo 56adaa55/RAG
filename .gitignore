@@ -1,0 +1,31 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# 环境变量 / 密钥（OPENAI_API_KEY、DASHSCOPE_API_KEY、DEEPSEEK_API_KEY 等）
+.env
+backend/.env
+
+# RAG 各阶段运行时产物（按需生成，不入库）
+backend/temp/
+backend/01-loaded-docs/
+backend/01-chunked-docs/
+backend/02-embedded-docs/
+backend/04-search-results/
+backend/05-generation-results/
+backend/06-evaluation-result/
+# 注意：backend/03-vector-store/chromadb/ 是持久化向量库，需要入库，故不忽略
+
+# 操作系统 / 编辑器
+.DS_Store
+*.log
+.vscode/
+.idea/
+
+# 评估文件（csv）
+evaluation_results.csv

@@ -9,6 +9,7 @@ import Indexing from './pages/Indexing';
 import Search from './pages/Search';
 import ParseFile from './pages/ParseFile';
 import Generation from './pages/Generation';
+import Evaluation from './pages/Evaluation';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
             <Route path="/indexing" element={<Indexing />} />
             <Route path="/search" element={<Search />} />
             <Route path="/generation" element={<Generation />} />
+            <Route path="/evaluation" element={<Evaluation />} />
             <Route path="/" element={<LoadFile />} />
           </Routes>
         </main>
