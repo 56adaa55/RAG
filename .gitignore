@@ -31,3 +31,6 @@ backend/06-evaluation-result/
 *.log
 .vscode/
 .idea/
+
+# 评估文件（csv）
+evaluation_results.csv

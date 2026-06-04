@@ -783,15 +783,25 @@ async def evaluate_search(
                     continue
                 
                 # 执行搜索
-                search_results = await search_service.search(
+                search_response = await search_service.search(
                     query=row['combined_text'],
                     collection_id=collection_id,
                     top_k=top_k,
                     threshold=threshold
                 )
+                search_results = search_response.get("results", []) if isinstance(search_response, dict) else search_response
                 
                 # 提取找到的页码
-                found_pages = [int(result['metadata']['page']) for result in search_results]
+                found_pages = []
+                for result in search_results:
+                    metadata = result.get("metadata", {})
+                    page_value = metadata.get("page") or metadata.get("page_number")
+                    if page_value is None:
+                        continue
+                    try:
+                        found_pages.append(int(page_value))
+                    except (TypeError, ValueError):
+                        logger.warning(f"Invalid page value in search result: {page_value}")
                 
                 # 计算分数
                 hits = sum(1 for page in found_pages if page in expected_pages)
@@ -810,7 +820,7 @@ async def evaluate_search(
                 # 添加每个top_k结果的文本作为单独的字段
                 for i, result in enumerate(search_results, 1):
                     result_entry[f"text_{i}"] = result['text']
-                    result_entry[f"page_{i}"] = result['metadata']['page']
+                    result_entry[f"page_{i}"] = result.get("metadata", {}).get("page")
                     result_entry[f"score_{i}"] = result['score']
                 
                 results.append(result_entry)

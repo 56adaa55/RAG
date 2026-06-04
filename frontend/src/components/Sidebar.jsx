@@ -12,7 +12,8 @@ const Sidebar = () => {
     { to: "/embedding", text: "向量存储" },
     { to: "/indexing", text: "向量库索引" },
     { to: "/search", text: "相似性检索" },
-    { to: "/generation", text: "响应生成" }
+    { to: "/generation", text: "响应生成" },
+    { to: "/evaluation", text: "效果评估" }
   ];
 
   return (
