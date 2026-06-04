@@ -8,7 +8,6 @@ __pycache__/
 *.py[cod]
 
 # Node
-node_modules
 frontend/dist/
 dist/
 
