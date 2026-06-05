@@ -77,7 +77,7 @@ DEEPSEEK_API_KEY=sk-your-deepseek-api-key-here
 如果不配置，将从HuggingFace Hub下载模型
 HF_MODEL_PATH=/path/to/your/local/huggingface/models
 
-   ```
+
 4. 运行 FastAPI 服务：
    ```bash
    uvicorn main:app --reload --port 8001 --host 0.0.0.0
@@ -139,18 +139,11 @@ fix：修复后端 /evaluate 接口的检索结果解析逻辑
 ```
 
 **2. 文件解析细化**（backend/services/parsing_service.py）
-```python
-# 添加更多解析器：
-- OCR解析（图片文档）
-- 表格提取（PDF表格）
-- Markdown保留结构
-- 代码文件解析（按函数/类）
-```
 
 **更新说明：新增 `_parse_titles_and_tables` 方法**
 本次更新对 `parsing_service.py` 进行了优化，主要新增了 `_parse_titles_and_tables` 方法，以实现对 PDF 中标题、正文、表格和图表的精确混合解析。
 * **多维度标题识别 (`is_title`)**：排除了特殊的数学干扰行，支持匹配常见章节格式，并兼容底层工具的 "Title" 标记。
-* **图表与说明文本智能拼接**：自动识别图表说明（Caption），重新与对应的图表块拼接，防止分离；并优先保留表格的 HTML 属性。
+* **图表与说明文本智能拼接**：自动识别图表说明，重新与对应的图表块拼接，防止分离；并优先保留表格的 HTML 属性。
 * **跨图表段落合并**：在同一个章节标题下，如果正文内容被表格或图表物理打断，会在处理尾声重新合并属于同一个标题的离散正文段落。
 
 **3. 向量索引比较**（新增 backend/services/index_benchmark.py）
