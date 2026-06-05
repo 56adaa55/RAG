@@ -1,0 +1,593 @@
+{
+  "filename": "Benchmark Everything Everywhere All at Once.pdf",
+  "total_chunks": 53,
+  "total_pages": 313,
+  "loading_method": "parsed_titles_and_tables",
+  "chunking_method": "loaded",
+  "timestamp": "2026-06-05T23:33:33.099866",
+  "chunks": [
+    {
+      "content": "Shiyun Xiong1∗ Dongming Wu1,2∗ Peiwen Sun1 Yuang Ai1 Bokang Yang3,4 Wencheng Han5 Xiao-Hui Li6 Xiangyu Yue1,4†\n1MMLab, The Chinese University of Hong Kong 2CPII under InnoHK 3The Chinese University of Hong Kong, Shenzhen 4Shenzhen Loop Area Institute 5Shandong University 6Huawei Technologies",
+      "metadata": {
+        "chunk_id": 1,
+        "page_number": 1,
+        "page_range": "1",
+        "type": "section",
+        "title": "Benchmark Everything Everywhere All at Once",
+        "word_count": 41
+      }
+    },
+    {
+      "content": "Figure 1: Our Benchmark Agent, as the first fully autonomous benchmark building system, can efficiently produce high-quality benchmarks across diverse modalities, tasks, and domains to meet user-specific requirements. It will offer rapidly evolving benchmarks to contribute to the community.",
+      "metadata": {
+        "chunk_id": 2,
+        "page_number": 1,
+        "page_range": "1",
+        "type": "figurecaption",
+        "title": "Benchmark Everything Everywhere All at Once",
+        "word_count": 39
+      }
+    },
+    {
+      "content": "Benchmarks are fundamental for evaluating and advancing LLMs and MLLMs by providing standardized and explicit measures of performance. However, their con- struction is labor-intensive and hard to reuse, raising concerns about sustainability and scalability. Moreover, existing benchmarks often quickly reach performance saturation after their release, resulting in insufficient discrimination among state- of-the-art models. To address these challenges, we introduce Benchmark Agent, a fully autonomous agentic system designed for benchmark building. Our framework orchestrates the complete benchmark construction pipeline, from user query analy- sis and subtask design to data annotation and quality control. To assess Benchmark Agent, we implement it to produce 15 representative benchmarks, spanning diverse evaluation scenarios, including text understanding, multimodal understand- ing, and domain-specific reasoning. Extensive experiments, including human\nPreprint.\nevaluation, LLM-as-a-judge assessment, and consistency checks, demonstrate Benchmark Agent can generate high-quality benchmark samples with minimal human involvement. More importantly, through continual evaluation, we observe several insightful findings, including that current models struggle with certain domain-specific reasoning tasks. We believe that rapidly evolving benchmarks can contribute significantly to the research community. The preview and code will be publicly available at @demopage and © code.",
+      "metadata": {
+        "chunk_id": 3,
+        "page_number": 1,
+        "page_range": "1",
+        "type": "section",
+        "title": "Abstract",
+        "word_count": 186
+      }
+    },
+    {
+      "content": "With the rapid advancement of the research of large language models (LLMs) like ChatGPT [36], Gemini [15] and Claude [3], their capabilities have expanded from basic understanding to complex reasoning, and from single-modal processing to multimodal comprehension. Behind this evolution, benchmarks have played a central role by providing standardized tasks, datasets, and evaluation protocols that track the progress of different approaches. However, as models continue to grow and improve, real-world applications require more comprehensive or more fine-grained evaluation.\nExisting benchmarks and their building pipelines are largely human-driven [12, 32, 39, 46, 50, 56]. This kind of construction pattern requires substantial effort in task design, data collection and cleaning, manual annotation, and human preference alignment. In addi- tion, these pipelines are often tailored to individual benchmarks. Each new benchmark often has to be built almost from scratch, leading to repeated manual effort and slow iteration cycles. Overall, such heavy reliance on human labor and benchmark-specific pipelines raises concerns about the long-term sustainability of current evaluation practices.\nMoreover, existing benchmarks often reach performance saturation shortly af- ter their release. To demonstrate this trend, Figure 2 presents a statistical anal- ysis of benchmark results for the open- sourced Qwen and Qwen-VL model se- ries [5, 6, 30, 31, 42, 44]. As shown, model performance improves rapidly within a short time span, with accu- racy scores exceeding 80%. This may leave only modest headroom for mean- ingful differentiation among state-of-the- art methods. Consequently, new bench- marks targeting novel functionalities or fine-grained skills are continually intro- duced to reveal emerging limitations;\nfine-grained skills are continually intro- Figure 2: Benchmark performance saturation on Qwen. duced to reveal emerging limitations;\nhowever, these benchmarks tend to saturate as models continue to improve.\nTo address the above challenges, we introduce Benchmark Agent, a novel autonomous framework for benchmark customization. It can automatically design, adapt, and manage benchmarks according to user-specified evaluation needs. As benchmark construction is a long-horizon task, it poses substan- tial challenges for straightforward LLM-based agents. Inspired by the brain-cerebellum hierarchical architecture [17, 33, 40, 57], our framework innovatively adopts a dual-component design. The first component is the Benchmark Planner, a high-level decision module that translates human evaluation requirements into concrete, feasible benchmark specifications, covering subtask division, data con- figuration, and overall transformation schemes. The second component is the Benchmark Executor, which serves as the operational module to convert the formulated specifications into standardized, runnable benchmarks. Tightly coupled with each other, the two modules enable the Benchmark Agent to establish an iterative, self-consistent workflow. This mechanism consistently bridges high-level evaluation queries with real-world data conditions and practical execution constraints.\nbenchmarks that mainly assess general-purpose capabilities through broad and uniform evaluation protocols [10, 16, 22, 23, 37, 46, 53, 55], our work focuses on customized and personalized evaluation\ntasks. It can adjust task formats, related domains, and evaluation criteria to specific user requirements. ❷ High quality with low human cost. This work standardizes and automates key stages of benchmark construction. This enables reusable pipelines, further reducing human labor costs. Through extensive experiment assessment (see § 4), we show that the generated benchmarks maintain reliable quality. ❸ Continual and fast refreshability. Benchmark Agent can quickly update benchmarks in response to emerging models, new domains, and changing user needs. This makes the benchmark construction process no longer a one-time, but a continual and adaptive evaluation.\nTo rigorously evaluate this system, we conduct comprehensive experiments to assess Benchmark Agent and its generated benchmarks. First, we perform human evaluation and LLM-as-a-judge assessment to verify the correctness and reliability of Benchmark Agent, and consistency checks to examine the discriminative power of the generated benchmark samples. Second, we systematically evaluate the time efficiency and cost effectiveness of the proposed system, demonstrating its practical advantages for rapid benchmark construction. Third, we conduct a set of ablation studies to confirm the effectiveness of each component in our framework. More importantly, through holistic benchmark evaluation, we find some significant observations that encourage future research of MLLMs.\nOverall, our key contributions are summarized as follows: First, we propose Benchmark Agent, the first fully autonomous agentic system designed for benchmark building and customization. It overcomes the limitations of existing benchmark construction patterns that are slow to iterate and labor-intensive. Second, we conduct extensive experiments, including human, consistency, and efficiency evaluations. They demonstrate that the generated benchmarks from Benchmark Agent are reliable, discriminative, and can be constructed efficiently and cost-effectively.",
+      "metadata": {
+        "chunk_id": 4,
+        "page_number": 2,
+        "page_range": "2",
+        "type": "section",
+        "title": "1 Introduction",
+        "word_count": 730
+      }
+    },
+    {
+      "content": "Agent-based Evaluation. Using LLM agents for benchmark evaluation has emerged as an active research direction. Early studies primarily leverage the strong language understanding capabilities of LLM to evaluate or compare model outputs [8, 11, 14, 58, 60]. Following this line of work, MLLM-as-a-Judge [9] further investigates the ability of MLLM to act as judges across diverse modalities. More recently, researchers have begun to explore agent-based evaluation frameworks that automate parts of the evaluation process [4, 21, 27, 35, 59, 62]. For example, Evaluation Agent [54] enables dynamic, multi-round evaluations and provides detailed, user-tailored analyses for visual generative tasks. Despite their increased flexibility, these methods typically operate on a fixed and predefined benchmark, while relying on dynamic tools or agents to complete multi-step evaluation procedures. In contrast, our work aims to explore how agents can be used to construct and adapt benchmarks dynamically, rather than only executing evaluations on static benchmark settings.\nAgent-based Data Synthesis. Recent work has attracted increasing attention for exploring agent- based data synthesis, where LLMs generate data through iterative reasoning, interaction, or tool use, primarily for large-scale training data generation [1, 19, 20, 24, 38]. These agentic workflows aim to reduce human annotation by improving data quality through multi-round refinement, such as code generation [18, 25] and multimodal content creation [34]. However, current agent-based data synthesis methods are largely oriented toward training data augmentation or domain-specific dataset construction [7, 29]. The use of agents for benchmark-oriented data synthesis, particularly for dynamically constructing evaluation benchmarks, remains relatively underexplored.\nAgent Systems. Driven by the strong reasoning capabilities and long-context understanding of LLMs, agents and agentic systems have rapidly expanded beyond traditional dialogue settings to a diverse range of complex, interactive domains, such as web browsers, mobile devices, and scientific discovery [26, 41, 43, 51, 61]. In these environments, agents are required to perceive rich multimodal observations, maintain long-horizon plans, and execute sequences of interdependent actions to accomplish user-specified goals. Here, ReAct [52] introduces a general paradigm, where agents alternate between explicit reasoning and environment interactions, forming the foundation of many subsequent agentic systems. Although agentic systems have advanced rapidly across a wide spectrum of applications, how to build reliable and scalable benchmarks is still an open problem.",
+      "metadata": {
+        "chunk_id": 5,
+        "page_number": 3,
+        "page_range": "3",
+        "type": "section",
+        "title": "2 Related Works",
+        "word_count": 368
+      }
+    },
+    {
+      "content": "Figure 3: The overall pipeline of Benchmark Agent. It consists of two main components. Bench- mark Planner first (i) decomposes user requirements into subtasks, then (ii) grounds each subtask to real datasets through transformability validation, and finally (iii) determines feasible allocations under global constraints. Benchmark Executor subsequently (i) performs sample-level planning, (ii) executes tool-based transformations, and (iii) verifies generated items to satisfy quota requirements.",
+      "metadata": {
+        "chunk_id": 6,
+        "page_number": 4,
+        "page_range": "4",
+        "type": "figurecaption",
+        "title": "2 Related Works",
+        "word_count": 64
+      }
+    },
+    {
+      "content": "In this section, we present the framework of Benchmark Agent, which aims to turn benchmark construction into an automatic and standardized agent-controlled process. Given an abstract evaluation requirement, the system can transform it into executable, evaluation-ready benchmarks with high quality. As shown in Figure 3, this system comprises two core components: (i) Benchmark Planner, functioning as a high-level decision-making module, is responsible for formulating sample generation plan based on the available data through multi-agent collaborative mechanisms; and (ii) Benchmark Executor, which transforms the plan into executable benchmark by leveraging a variety of tools and implementing strict quality control measures. More details are elaborated as follows.",
+      "metadata": {
+        "chunk_id": 7,
+        "page_number": 4,
+        "page_range": "4",
+        "type": "section",
+        "title": "3 Benchmark Agent",
+        "word_count": 105
+      }
+    },
+    {
+      "content": "User requirements, e.g., \"I want to evaluate the model’s comprehension of mixed-language speech- based conversations.\", are typically user-oriented and highly flexible. Benchmark Planner is to translate the requirement R to a subtask set S = {si}N i=1 and verify that each subtask admits at least one feasible grounding. For each subtask si, let Di = {di,j}Mi j=1 denote its candidate dataset set. A valid grounding for si is represented as (di,j,ti,j), where di,j denotes a dataset candidate for si and ti,j denotes the corresponding transformation plan for realizing si on di,j. The Planner employs a multi-agent collaboration system, consisting of Design agent, Grounding agent, and Allocation agent.\nDesign Agent. Given a requirement R, the Design Agent converts the informal human intention into a set of structured subtasks. Each subtask si corresponds to an independent, testable evaluation dimension and serves as the basic unit for downstream grounding.\nSpecifically, to fully explore benchmark design spaces, this agent first uses the Proposer tool to brainstorm candidate subtasks S. These candidates differ in granularity, coverage, and emphasis, representing alternative interpretations of the evaluation intent. Then, this agent continuously re- assesses if each subtask set remains well-posed and meaningful using two additional tools. Via the Revising tool, it refines a subtask’s formulation or scope while preserving its core evaluation intent; Discarding operation eliminates subtasks with marginal or unclear benchmark contributions. Once\nthe subtask specification stabilizes under these criteria, it is passed to the grounding stage for explicit validation against concrete datasets and transformation plans.\nGrounding Agent. This agent is to validate whether the above subtasks can be supported by real data and executable transformations. To ensure each subtask admits at least one feasible realization using available datasets and transformation capabilities, we implement a three-step process:\ni) Dataset Search. For each subtask si, the Grounding Agent first explores which type of data can reasonably support its evaluation objective. Candidate dataset preferences are generated via the Preference tool, which characterizes desirable attributes including data modality, annotation structure, and domain. Based on these preferences, the agent conducts dataset search using the Searching tool. The retrieved candidate datasets for subtask si, denoted as Di = {di,j}Mi subsequently filtered using preliminary compatibility signals derived from the subtask specification. j=1, are\nii) Transformability Validation. For each remaining subtask–dataset pair (si,di,j) with di,j ∈ Di, the Grounding Agent evaluates whether the subtask can be concretely realized through available transformations. This assessment proceeds in two stages. In the first stage, candidate transformation plans are constructed by the Transformability tool using both LLM-based and non-LLM based (see A.3). In the second stage, candidate plans are evaluated and pruned by a Score-and-Filter module, which assigns structured scores along three dimensions: (1) Alignment with the subtask’s evaluation intent, (2) Robustness of the transformation process, and (3) Preservation of the underlying evaluation signal. Only plans that satisfy all criteria are retained as valid groundings. Finally, a retained plan ti,j yields a grounded instantiation of the form (si,di,j,ti,j).\nThe current subtask specification is accepted only if every subtask has at least one dataset– transformation grounding:\n∀si ∈ S, ∃di,j ∈ Di, ∃ti,j s.t. (si,di,j,ti,j) is a valid grounding.\nWhen this condition holds, the outputs are forwarded to the allocation stage. If any subtask fails to meet this criterion, the specification is rejected and returned to the Design Agent for revision, closing the design–grounding feedback loop.\nAllocation Agent. Given a set of grounded instantiations (si,di,j,ti,j), the Allocation Agent determines whether the benchmark can be instantiated under global quota and resource constraints. The agent resolves this decision through a closed-loop allocation mechanism. An initial allocation is proposed using the Allocation tool. When feasibility is violated, the Diagnose tool identifies structural causes, such as capacity bottlenecks or incompatible quota requirements. Guided by this diagnosis, the Adjustment tool revises the allocation within the space of already grounded candidates. This loop continues until either a feasible allocation is identified or no admissible adjustment remains.\nAfter design, grounding, and allocation, the benchmark specification can be represented as:\nB = {(si,Gi)}N\nwhere each si denotes a subtask, and Gi is the set of grounded and allocated dataset instantiations associated with si. Each instantiation in Gi takes the form (di,j,ti,j,qi,j), where di,j is a dataset for si, ti,j is its validated transformation plan, and qi,j is the allocated sample quota. A feasible benchmark specification is forwarded to execution; otherwise, it is returned upstream for revision.",
+      "metadata": {
+        "chunk_id": 8,
+        "page_number": 4,
+        "page_range": "4",
+        "type": "section",
+        "title": "3.1 Benchmark Planner",
+        "word_count": 729
+      }
+    },
+    {
+      "content": "Once a feasible allocation has been established, benchmark construction proceeds to realization. In this stage, validated benchmark specifications are instantiated into concrete, evaluation-ready items through a controlled execution framework.\nSample-Level Realization. For each (di,j,ti,j,qi,j) ∈ Gi associated with subtask si, we generate qi,j benchmark items through an orchestration–execution mechanism. We first follow standardized transformation rules at the dataset level to guide the overall execution, and meanwhile make small adjustments based on real feedback from individual samples.\ni) Orchestration. At each step, an LLM determines the next transformation action by specializing the dataset-level plan ti,j to the current sample state. The resulting action specifies its executor as well as its operation on the current sample, or its required input and output arguments, or its field mappingfrom the previous sample state to the newly produced fields. Although planning remains adaptive, it is explicitly constrained by the ti,j, preventing uncontrolled divergence across samples.\nii) Execution. Each planned action is executed here. LLM-based tools are applied directly, whereas non-LLM tools are executed with explicitly instantiated parameters produced during planning. The resulting intermediate outputs are fed back into the planning stage, allowing subsequent decisions to account for concrete transformation effects. This interleaved process continues until the dataset-level plan is fully realized or a termination condition is reached.\nWe adopt two main types of non-LLM tools (see § A.3 for full details).\nThe first category consists of content synthesis tools, such as text-to-speech, image resizing, audio mixing, web search, and noise injection. The second category consists of script-based processing tools, which handle deterministic sample-level operations such as file conversion, metadata editing, content decomposition, and structured field patching.\nQuality and Quota Control. During the executing phase, generated samples are continuously verified to ensure both semantic validity and structural compliance with the subtask specification. The verification process assesses two key aspects: whether a sample truly reflects the intended evaluation objective and whether it conforms to the required output format. Only samples that pass the verification process are included in the benchmark; invalid samples are either discarded or, when technically feasible, routed back to the relevant stage for localized correction or partial re-generation.\nBeyond quality control, the verification process also regulates the fulfillment of quotas. Failed samples reduce the effective yield of valid items and may hinder a subtask from meeting its target quota. In such cases, additional raw samples are selected and reprocessed through the same constrained orchestration-execution mechanism. This verification-guided replenishment process continues until all subtask quotas are satisfied or no further valid samples can be generated. Once quality checks and quota limits are applied, we get the final benchmark for model evaluation.",
+      "metadata": {
+        "chunk_id": 9,
+        "page_number": 5,
+        "page_range": "5",
+        "type": "section",
+        "title": "3.2 Benchmark Executor",
+        "word_count": 436
+      }
+    },
+    {
+      "content": "Table 1: Quality evaluation of different benchmarks generated by our Benchmark Agent. We report human acceptance rates and LLM-as-Judge scores across multiple quality dimensions. We also report the consistency performance of Qwen3.5-series models on each benchmark.",
+      "metadata": {
+        "chunk_id": 10,
+        "page_number": 6,
+        "page_range": "6",
+        "type": "table",
+        "title": "3.2 Benchmark Executor",
+        "word_count": 36
+      }
+    },
+    {
+      "content": "Benchmark Human LLM-as-Judge Eval. Acc. UIA FSQ QAC CQC TSD SSC Overall 2B 4B 9B 27B Multi-Perspective (T) 97.65 76.77 87.93 96.70 75.31 63.36 39.78 72.55 71.06 74.04 81.28 87.23 Multilingual (A) 98.47 81.48 95.21 95.83 89.35 69.44 41.05 78.50 – – – – Omni-Understanding (O) 96.09 68.54 99.66 94.14 79.71 49.71 30.43 67.98 – – – – Art-Reasoning (I) 98.65 74.06 99.70 91.98 65.49 66.04 51.12 72.19 40.96 46.28 51.60 56.38 Math-Reasoning (I) 96.62 79.69 94.72 95.44 87.58 68.08 45.13 77.79 45.26 47.19 48.88 54.49",
+      "metadata": {
+        "chunk_id": 11,
+        "page_number": 6,
+        "page_range": "6",
+        "type": "table",
+        "title": "3.2 Benchmark Executor",
+        "word_count": 86
+      }
+    },
+    {
+      "content": "Figure 4: Failure cases observed during model evaluation. Human verification confirms that the annotations for these samples are correct, and the errors arise from model predictions.",
+      "metadata": {
+        "chunk_id": 12,
+        "page_number": 6,
+        "page_range": "6",
+        "type": "figurecaption",
+        "title": "3.2 Benchmark Executor",
+        "word_count": 26
+      }
+    },
+    {
+      "content": "Benchmark construction setting. Unless otherwise specified, we use GPT-5.1 as the backbone model of Benchmark Agent and General-Bench [13] as the dataset pool to narrow the dataset search.We build task benchmarks covering four distinct scenarios based on user demands, including 4 for Text-Only(T), 3 for Audio-Text(A), 7 for Image–Text(I), and 1 for Audio–Text–Image(O) benchmarks. User requirements and benchmark details are in § A.1. Benchmark sample visualizations are in § D.\nEvaluation Criteria. We evaluate benchmarks generated by Benchmark Agent on three criteria: (1) Human Evaluation. Human experts judge whether generated samples are correct, clear, answerable, and relevant to the intended capability, using a 1–5 scale normalized to 0–100. We report the human acceptance rate as Acc. (2) LLM-as-Judge. The judge first assesses benchmark-level alignment, measuring whether the constructed benchmark faithfully reflects the intended evaluation goal. It then scores sampled items with predefined rubrics covering validity, answerability, grounding, target-signal dependency, and challenge (see following for more details). (3) Consistency Checks. It assesses benchmark utility or distinction through consistency checks based on model performance trends [28]. The intuition is that a useful benchmark should produce coherent rankings among related models, that is, stronger performance for newer or larger models within the same family.\nLLM-as-Judge protocol. We report User-Intention Alignment (UIA) as the benchmark-level metric, measuring how well the generated benchmark reflects the user’s evaluation goal. At the item level, motivated by FineVision [47], we report five metrics: Format & Schema Quality (FSQ) for format and answer-schema correctness, Question–Answer Coherence (QAC) for semantic consistency between the question and answer, Context–Question Correspondence (CQC) for grounding the question in the provided context or media, Target Signal Dependency (TSD) for reliance on the intended capability or modality signal, and Skill-Specific Challenge (SSC) for the depth of target-skill reasoning. See more descriptions and details in § A.2.",
+      "metadata": {
+        "chunk_id": 13,
+        "page_number": 6,
+        "page_range": "6",
+        "type": "section",
+        "title": "4.1 Experimental Setup",
+        "word_count": 300
+      }
+    },
+    {
+      "content": "Table 2: Quality evaluation of benchmarks generated by direct LLMs. We directly prompt different LLMs to construct benchmarks for each evaluation domain, and report LLM-as-Judge scores. Open-source and closed-source models are highlighted with different backgrounds, respectively.",
+      "metadata": {
+        "chunk_id": 14,
+        "page_number": 7,
+        "page_range": "7",
+        "type": "table",
+        "title": "4.1 Experimental Setup",
+        "word_count": 36
+      }
+    },
+    {
+      "content": "Benchmark Model LLM-as-Judge Eval. UIA FSQ QAC CQC TSD SSC Qwen3.5-397B-A17B 20.71 94.40 88.33 73.10 25.95 21.19 GPT-5.4 33.93 94.7 88.75 80.89 40.36 24.11 Multi-Perspective (T) Claude-Sonnet-4-6 42.66 95.75 94.84 95.62 35.00 25.47 Gemini-3.1-Pro-Preview 37.34 83.26 84.28 83.96 35.53 24.37 Qwen3.5-397B-A17B 17.08 98.83 91.46 74.38 30.00 16.25 GPT-5.4 18.21 97.14 92.50 70.00 14.64 11.79 Art-Reasoning2 (I) Claude-Sonnet-4-6 43.05 97.78 90.67 49.21 32.74 20.63 Gemini-3.1-Pro-Preview 24.21 94.29 87.10 72.02 29.76 16.47 Overall 45.76 54.31 59.78 53.63 45.75 41.86 49.49 46.55",
+      "metadata": {
+        "chunk_id": 15,
+        "page_number": 7,
+        "page_range": "7",
+        "type": "table",
+        "title": "4.1 Experimental Setup",
+        "word_count": 79
+      }
+    },
+    {
+      "content": "Table 3: Effect of different base models in Benchmark Agent. We replace the base model used by Benchmark Agent with different open-source and closed-source LLMs, and evaluate them using LLM-as-Judge scores.",
+      "metadata": {
+        "chunk_id": 16,
+        "page_number": 7,
+        "page_range": "7",
+        "type": "table",
+        "title": "4.1 Experimental Setup",
+        "word_count": 31
+      }
+    },
+    {
+      "content": "Benchmark Model LLM-as-Judge Eval. UIA FSQ QAC CQC TSD SSC Qwen3.5-397B-A17B 69.92 96.87 88.28 81.25 67.58 39.84 GPT-5.4 69.74 98.54 94.55 91.82 69.09 39.55 Multi-Perspective (T) Claude-Sonnet-4-6 73.41 96.59 95.48 86.97 71.01 44.68 Gemini-3.1-Pro-Preview 77.89 100.00 96.15 93.27 72.12 47.12 Qwen3.5-397B-A17B 61.21 99.20 83.00 73.00 48.00 29.00 GPT-5.4 63.16 98.15 95.00 76.67 48.33 31.67 Omni-Understanding(O) Claude-Sonnet-4-6 66.78 99.74 91.45 76.64 51.32 32.24 Gemini-3.1-Pro-Preview 70.53 99.54 89.53 69.19 55.81 29.65 Qwen3.5-397B-A17B 75.00 99.58 90.43 61.70 72.34 60.11 GPT-5.4 69.91 99.63 90.28 63.43 68.98 53.70 Art-Reasoning2 (I) Claude-Sonnet-4-6 75.00 100.00 86.25 62.50 72.50 55.00 Gemini-3.1-Pro-Preview 76.31 99.65 90.79 62.72 71.49 57.46 Overall 72.24 75.34 76.43 79.88 62.69 65.64 67.08 67.00 73.82 71.20 72.94 73.98",
+      "metadata": {
+        "chunk_id": 17,
+        "page_number": 7,
+        "page_range": "7",
+        "type": "table",
+        "title": "4.1 Experimental Setup",
+        "word_count": 112
+      }
+    },
+    {
+      "content": "User-oriented Customization. Table 1 reports the main evaluation of benchmarks generated by Benchmark Agent. We evaluate five representative benchmarks. Human evaluation shows that the generated benchmarks achieve acceptance rates of around 96–98%, while LLM-as-Judge evaluation reports UIA scores ranging from 68.54 to 81.48. These results suggest that our method generally preserves the original user requirements and produces usable benchmarks for customized evaluation.",
+      "metadata": {
+        "chunk_id": 18,
+        "page_number": 7,
+        "page_range": "7",
+        "type": "section",
+        "title": "4.2 Main Results",
+        "word_count": 62
+      }
+    },
+    {
+      "content": "Table 4: Ablation study on different components of Benchmark Agent. We remove each key component from Benchmark Agent and evaluate the resulting benchmarks. The ablated components include the Design Agent, Transformability Checking + Plan Scoring (TC + Scoring), sample-level planning (SLP), and verification.",
+      "metadata": {
+        "chunk_id": 19,
+        "page_number": 8,
+        "page_range": "8",
+        "type": "table",
+        "title": "4.2 Main Results",
+        "word_count": 43
+      }
+    },
+    {
+      "content": "Benchmark Setting LLM-as-Judge Eval. UIA FSQ QAC CQC TSD SSC Overall Benchmark Agent 76.77 87.93 96.70 75.31 63.36 39.78 72.55 w/o Design Agent 75.00 86.66 96.38 78.80 63.22 38.22 72.34 Multi-Perspective (T) w/o TC + Scoring 59.45 85.86 88.26 79.27 53.20 35.21 64.59 w/o SLP 74.61 92.18 95.05 78.52 58.07 33.98 71.01 w/o Verification 74.01 84.84 93.91 70.39 64.64 40.30 70.49 Benchmark Agent 68.54 99.66 94.14 79.71 49.71 30.43 67.98 w/o Design Agent 61.47 95.67 94.44 73.25 42.84 26.02 62.48 Omni-Understanding(O) w/o TC + Scoring 44.30 78.42 81.80 33.11 38.82 24.56 45.69 w/o SLP 67.44 99.86 91.91 80.40 46.40 27.14 66.54 w/o Verification 67.33 97.66 92.83 79.50 46.33 28.17 66.36 Benchmark Agent 74.06 99.70 91.98 65.49 66.04 51.12 72.19 w/o Design Agent 74.25 98.95 90.49 63.25 57.65 42.54 68.97 Art-Reasoning2 (I) w/o TC + Scoring 74.06 99.16 89.74 64.74 63.68 48.42 70.98 w/o SLP 66.54 100.00 94.32 64.77 43.81 36.49 64.19 w/o Verification 74.41 99.15 89.55 64.96 64.75 47.75 71.21",
+      "metadata": {
+        "chunk_id": 20,
+        "page_number": 8,
+        "page_range": "8",
+        "type": "table",
+        "title": "4.2 Main Results",
+        "word_count": 160
+      }
+    },
+    {
+      "content": "In addition to preserving user-oriented customization, Benchmark Agent achieves strong item-level quality. FSQ and QAC remain consistently high, showing that the generated samples are generally well-structured and semantically coherent. The larger variation in CQC and the lower TSD/SSC scores indicate that evidence grounding, target-signal dependency, and difficulty control remain more challenging. Overall, these results suggest that Benchmark Agent can produce usable customized benchmarks, while highlighting grounding fidelity and capability-oriented challenge as key directions for future improvement.\nModel discriminative. We further examine if the generated benchmarks provide useful signals for model comparison. As shown in Table 1, Qwen3.5 models show consistent scaling trends on the three applicable benchmarks: 71.06–87.23 on Multi-Perspective (T), 40.96–56.38 on Art-Reasoning (I), and 45.26–54.49 on Math-Reasoning (I) from 2B to 27B. Additional model-scale and model-family comparisons for the remaining benchmarks are also provided in § B. Overall, these results suggest that the generated benchmarks are both usable as evaluation data and informative for comparing model capabilities.",
+      "metadata": {
+        "chunk_id": 21,
+        "page_number": 8,
+        "page_range": "8",
+        "type": "section",
+        "title": "Benchmark quality.",
+        "word_count": 159
+      }
+    },
+    {
+      "content": "For benchmark samples generated by the Benchmark Agent, identifying incorrectly predicted cases poses a challenge in distinguishing whether the errors arise from the model’s inherent limitations or from flaws within the benchmark itself—such as ambiguous instructions or annotation noise. Our qualitative analysis in Figure 4 shows that these failures mainly stem from the model itself, instead of actual mistakes. More qualitative results are provided in § D.Agent can further speed up benchmark building via increased bandwidth when benchmarks require frequent updates.",
+      "metadata": {
+        "chunk_id": 22,
+        "page_number": 8,
+        "page_range": "8",
+        "type": "section",
+        "title": "Qualitative results.",
+        "word_count": 81
+      }
+    },
+    {
+      "content": "Table 5: Cost analysis comparison between human and Benchmark Agent.",
+      "metadata": {
+        "chunk_id": 23,
+        "page_number": 8,
+        "page_range": "8",
+        "type": "table",
+        "title": "Qualitative results.",
+        "word_count": 10
+      }
+    },
+    {
+      "content": "struction methods: human annotation and the Benchmark Agent. Obviously, human Method Audio-based Reasoning Art Reasoning1 annotation requires higher labor and time Human 6 min / sample 5 min / sample costs than Our Benchmark Agent. More no- Benchmark Agent 0.3 min / sample 0.2 min / sample",
+      "metadata": {
+        "chunk_id": 24,
+        "page_number": 8,
+        "page_range": "8",
+        "type": "table",
+        "title": "Qualitative results.",
+        "word_count": 47
+      }
+    },
+    {
+      "content": "Ablation I: Direct LLM-based Benchmark Generation. We compare Benchmark Agent with direct LLM-based benchmark generation under the same user requirements. As shown in Table 2, direct generation achieves much lower overall scores, especially on UIA, TSD, and SSC, although surface-level dimensions such as FSQ and QAC can remain relatively high. This shows that strongLLMs can generate well-formed samples, but the agentic workflow is necessary to preserve user intent and control the intended evaluation signal.\nAblation II: Different Backbone Model for Benchmark Agent. We study the effect of the agent backbone by replacing the LLM used in Benchmark Agent under the same construction pipeline. As shown in Table 3, all tested backbones can construct usable benchmarks, and the overall scores remain in a relatively stable range within each benchmark: 73.17–79.88 on Multi-Perspective (T), 65.64–70.75 on Multilingual (A), and 70.67–73.82 on Art-Reasoning (I). This shows that the agentic workflow provides a stable construction process rather than relying on a single specific backbone. Moreover, closed-source models still tend to obtain higher scores, especially on dimensions that require stronger intent understanding and multi-step planning.\nAblation III: Benchmark Agent Components. We further ablate key components of Benchmark Agent, including the Design Agent, Transformability Checking + Plan Scoring (TC + Scoring), Sample-level Planning (SLP), and Verification, to examine how each stage contributes to benchmark quality. As shown in Table 4, different components contribute to different aspects of benchmark quality. The Design Agent is most important for broad requirements with multiple evaluation aspects, while TC+Scoring is crucial for complex multimodal transformations. SLP helps adapt the global plan to sample-specific evidence, and Verification controls reliability by filtering ambiguous or weakly grounded samples. Together, these complementary effects explain why the full Benchmark Agent achieves the best overall scores across the three benchmarks.",
+      "metadata": {
+        "chunk_id": 25,
+        "page_number": 8,
+        "page_range": "8",
+        "type": "section",
+        "title": "4.3 Ablation Studies",
+        "word_count": 293
+      }
+    },
+    {
+      "content": "Table 6: Performance comparison of different MLLMs on image–text benchmarks generated by our Benchmark Agent. Art2 uses a requirement that requires harder benchmarks than Art1.\n\nModel Medical Art1 Art2 Animal Geography Math Code Commercial Models Gemini-3-Pro 72.19 82.51 67.55 72.01 90.12 88.19 80.86 GPT-5.2 70.13 64.12 68.62 74.23 90.12 82.10 80.86 Open-Source MLLMs Qwen2.5-VL-3B [6] 50.74 34.27 42.55 65.71 69.35 47.19 48.68 Qwen2.5-VL-7B [6] 52.22 58.04 48.94 70.48 84.92 67.42 54.82 Qwen2.5-VL-32B [6] 63.33 68.53 57.45 67.62 88.94 79.78 71.05 Qwen3-VL-4B [49] 60.37 58.74 48.40 71.43 84.42 75.28 64.04 Qwen3-VL-8B [49] 70.74 68.53 51.06 66.67 88.94 76.97 60.96 Qwen3-VL-32B [49] 69.26 72.03 64.89 69.05 94.97 84.83 70.61 InternVL3.5-4B [45] 64.07 27.97 16.52 50.48 80.40 69.10 60.09 InternVL3.5-8B [45] 66.67 30.77 21.48 56.19 82.91 79.78 65.79 Fully Open-Source MLLMs LLaVA-OneVision-1.5-4B [2] 44.44 23.08 19.83 21.90 50.25 39.33 51.32 LLaVA-OneVision-1.5-8B [2] 42.96 12.59 13.22 19.52 57.29 43.13 56.14 Avg 80.98 76.93 52.66 64.65 73.21 69.05 72.14 76.79 58.69 63.69 38.39 38.60",
+      "metadata": {
+        "chunk_id": 26,
+        "page_number": 9,
+        "page_range": "9",
+        "type": "table",
+        "title": "4.3 Ablation Studies",
+        "word_count": 159
+      }
+    },
+    {
+      "content": "Preliminary 1: MLLMs exhibit unbalanced performance across different domains in multi- modal understanding tasks.\nIn Table 6, we present a comprehensive comparison across a wide range of image-based benchmarks, covering general vision understanding, reasoning, and fine-grained perception tasks. Across various tasks, the Qwen series demonstrates superior multi-modal understanding, particularly in geography and math. However, it struggles with fine-grained tasks, especially in the art and animal categories. This may be due to architectural or training data limitations, which hinder the model’s ability to fully capture the intricate details of these domains. Overall, the results highlight both the strengths and limitations of current MLLMs, pointing to areas for further improvement.\nWe also provide a comprehensive evaluation across 4 text-only benchmarks, 3 text-audio benchmarks, 1 audio-text-image benchmark in § B.",
+      "metadata": {
+        "chunk_id": 27,
+        "page_number": 9,
+        "page_range": "9",
+        "type": "section",
+        "title": "4.4 New Findings",
+        "word_count": 127
+      }
+    },
+    {
+      "content": "In this work, we presented Benchmark Agent, the first autonomous agent-based framework for customizable benchmark construction. It addresses the scalability and sustainability limitations of human-driven evaluation. Experiments show that the generated benchmarks are reliable, discrimina- tive, and cost-efficient. Compared with traditional benchmark construction patterns, our framework exhibits two unique characteristics that endow it with the potential for broader applications.\nCustomized and Fine-Grained Benchmarking. Unlike conventional benchmarks that are usually designed for generic tasks and coarse-grained evaluation [12, 32, 39, 46, 48, 50, 56], our Benchmark Agent explicitly targets customized and fine-grained demands. It can flexibly adapt to different application scenarios, user goals, and domain-specific requirements, enabling the construction of benchmarks that better reflect real-world usage and nuanced evaluation criteria.\nRapid and Efficient Benchmark Iteration. Another key advantage of our Benchmark Agent lies in its ability to support fast and efficient iteration. Traditional benchmark construction is often time-consuming and costly, making it difficult to keep pace with the rapid evolution of models and tasks. In contrast, our agent-based framework enables quick updates, refinements, and extensions of benchmarks, significantly reducing human effort and turnaround time.",
+      "metadata": {
+        "chunk_id": 28,
+        "page_number": 10,
+        "page_range": "10",
+        "type": "section",
+        "title": "5 Discussion and Conclusion",
+        "word_count": 183
+      }
+    },
+    {
+      "content": "[1] Yelaman Abdullin, Diego Molla, Bahadorreza Ofoghi, John Yearwood, and Qingyang Li. Synthetic dialogue dataset generation using llm agents. In Proceedings of the Third Workshop on Natural Language Generation, Evaluation, and Metrics (GEM), 2023.\n[2] Xiang An, Yin Xie, Kaicheng Yang, Wenkang Zhang, Xiuwei Zhao, Zheng Cheng, Yirui Wang, Songcen Xu, Changrui Chen, Didi Zhu, et al. Llava-onevision-1.5: Fully open framework for democratized multimodal training. arXiv preprint arXiv:2509.23661, 2025.\n[3] Anthropic. System card: Claude opus 4 and claude sonnet 4. https://www-cdn.anthropic. com/6be99a52cb68eb70eb9572b4cafad13df32ed995.pdf, May 2025.\n[4] Tajamul Ashraf, Amal Saqib, Hanan Ghani, Muhra AlMahri, Yuhao Li, Noor Ahsan, Umair Nawaz, Jean Lahoud, Hisham Cholakkal, Mubarak Shah, et al. Agent-x: Evaluating deep multimodal reasoning in vision-centric agentic tasks. arXiv preprint arXiv:2505.24876, 2025.\n[5] Jinze Bai, Shuai Bai, Yunfei Chu, Zeyu Cui, Kai Dang, Xiaodong Deng, Yang Fan, Wenbin Ge, Yu Han, Fei Huang, et al. Qwen technical report. arXiv preprint arXiv:2309.16609, 2023.\n[6] Shuai Bai, Keqin Chen, Xuejing Liu, Jialin Wang, Wenbin Ge, Sibo Song, Kai Dang, Peng Wang, Shijie Wang, Jun Tang, et al. Qwen2. 5-vl technical report. arXiv preprint arXiv:2502.13923, 2025.\n[7] Natasha Butt, Varun Chandrasekaran, Neel Joshi, Besmira Nushi, and Vidhisha Balachan- dran. Benchagents: Multi-agent systems for structured benchmark creation. arXiv preprint arXiv:2410.22584, 2024.\n[8] Chi-Min Chan, Weize Chen, Yusheng Su, Jianxuan Yu, Wei Xue, Shanghang Zhang, Jie Fu, and Zhiyuan Liu. Chateval: Towards better llm-based evaluators through multi-agent debate. arXiv preprint arXiv:2308.07201, 2023.\n[9] Dongping Chen, Ruoxi Chen, Shilin Zhang, Yaochen Wang, Yinuo Liu, Huichi Zhou, Qihui Zhang, Yao Wan, Pan Zhou, and Lichao Sun. Mllm-as-a-judge: Assessing multimodal llm-as-a- judge with vision-language benchmark. In ICML, 2024.\n[10] Lin Chen, Jinsong Li, Xiaoyi Dong, Pan Zhang, Yuhang Zang, Zehui Chen, Haodong Duan, Jiaqi Wang, Yu Qiao, Dahua Lin, et al. Are we on the right way for evaluating large vision-language models? NeurIPS, 2024.\n[11] Cheng-Han Chiang and Hung-yi Lee. Can large language models be an alternative to human evaluations? arXiv preprint arXiv:2305.01937, 2023.\n[12] Shihan Dou, Ming Zhang, Zhangyue Yin, Chenhao Huang, Yujiong Shen, Junzhe Wang, Jiayi Chen, Yuchen Ni, Junjie Ye, Cheng Zhang, et al. Cl-bench: A benchmark for context learning. arXiv preprint arXiv:2602.03587, 2026.\n[13] Hao Fei, Yuan Zhou, Juncheng Li, Xiangtai Li, Qingshan Xu, Bobo Li, Shengqiong Wu, Yaoting Wang, Junbao Zhou, Jiahao Meng, et al. On path to multimodal generalist: General-level and general-bench. In ICML, 2025.\n[14] Jinlan Fu, See Kiong Ng, Zhengbao Jiang, and Pengfei Liu. Gptscore: Evaluate as you desire. In Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers), 2024.\n[15] Google DeepMind. Gemini 3 pro model card. https://storage.googleapis.com/ deepmind-media/Model-Cards/Gemini-3-Pro-Model-Card.pdf, December 2025.\n[16] Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn Song, and Jacob Steinhardt. Measuring massive multitask language understanding. arXiv preprint arXiv:2009.03300, 2020.\n[17] Sharon Israely, Hugo Ninou, Ori Rajchert, Lee Elmaleh, Ran Harel, Firas Mawase, Jonathan Kadmon, and Yifat Prut. Cerebellar output shapes cortical preparatory activity during motor adaptation. Nature Communications, 2025.\n[18] Team Kimi, Yifan Bai, Yiping Bao, Guanduo Chen, Jiahao Chen, Ningxin Chen, Ruijue Chen, Yanru Chen, Yuankun Chen, Yutian Chen, et al. Kimi k2: Open agentic intelligence. arXiv preprint arXiv:2507.20534, 2025.\n[19] Hao Liang, Xiaochen Ma, Zhou Liu, Zhen Hao Wong, Zhengyang Zhao, Zimo Meng, Runming He, Chengyu Shen, Qifeng Cai, Zhaoyang Han, et al. Dataflow: An llm-driven framework for unified data preparation and workflow automation in the era of data-centric ai. arXiv preprint arXiv:2512.16676, 2025.\n[20] Lequan Lin, Dai Shi, Andi Han, Feng Chen, Qiuzheng Chen, Jiawen Li, Zhaoyang Li, Jiyuan Li, Zhenbang Sun, and Junbin Gao. Act as human: Multimodal large language model data annotation with critical thinking. arXiv preprint arXiv:2511.09833, 2025.\n[21] Xiao Liu, Hao Yu, Hanchen Zhang, Yifan Xu, Xuanyu Lei, Hanyu Lai, Yu Gu, Hangliang Ding, Kaiwen Men, Kejuan Yang, et al. Agentbench: Evaluating llms as agents. In The Twelfth International Conference on Learning Representations (ICLR), 2024.\n[22] Yuan Liu, Haodong Duan, Yuanhan Zhang, Bo Li, Songyang Zhang, Wangbo Zhao, Yike Yuan, Jiaqi Wang, Conghui He, Ziwei Liu, et al. Mmbench: Is your multi-modal model an all-around player? In ECCV, 2024.\n[23] Pan Lu, Hritik Bansal, Tony Xia, Jiacheng Liu, Chunyuan Li, Hannaneh Hajishirzi, Hao Cheng, Kai-Wei Chang, Michel Galley, and Jianfeng Gao. Mathvista: Evaluating mathematical reasoning of foundation models in visual contexts. arXiv preprint arXiv:2310.02255, 2023.\n[24] Haipeng Luo, Qingfeng Sun, Can Xu, Pu Zhao, Qingwei Lin, Jianguang Lou, Shifeng Chen, Yansong Tang, and Weizhu Chen. Arena learning: Build data flywheel for llms post-training via simulated chatbot arena. arXiv preprint arXiv:2407.10627, 2024.\n[25] Yichuan Ma, Yunfan Shao, Peiji Li, Demin Song, Qipeng Guo, Linyang Li, Xipeng Qiu, and Kai Chen. Unitcoder: Scalable iterative code synthesis with unit test guidance. arXiv preprint arXiv:2502.11460, 2025.\n[26] Team MiroMind, Song Bai, Lidong Bing, Carson Chen, Guanzheng Chen, Yuntao Chen, Zhe Chen, Ziyi Chen, Jifeng Dai, Xuan Dong, et al. Mirothinker: Pushing the performance boundaries of open-source research agents via model, context, and interactive scaling. arXiv preprint arXiv:2511.11793, 2025.\n[27] Jiayi Pan, Yichi Zhang, Nicholas Tomlin, Yifei Zhou, Sergey Levine, and Alane Suhr. Au- tonomous evaluation and refinement of digital agents. arXiv preprint arXiv:2404.06474, 2024.\n[28] Qi Qian, Chengsong Huang, Jingwen Xu, Changze Lv, Muling Wu, Wenhao Liu, Xiaohua Wang, Zhenghua Wang, Zisu Huang, Muzhao Tian, et al. Benchmarkˆ 2: Systematic evaluation of llm benchmarks. arXiv preprint arXiv:2601.03986, 2026.\n[29] Ruidi Qiu, Grace Li Zhang, Rolf Drechsler, Ulf Schlichtmann, and Bing Li. Autobench: Automatic testbench generation and evaluation using llms for hdl design. In Proceedings of the 2024 ACM/IEEE International Symposium on Machine Learning for CAD, 2024.\n[30] Team Qwen et al. Qwen2 technical report. arXiv preprint arXiv:2407.10671, 2(3), 2024.\n[31] Qwen Team. Qwen3.6-Plus: Towards real world agents, April 2026. URL https://qwen.ai/ blog?id=qwen3.6.\n[32] David Rein, Betty Li Hou, Asa Cooper Stickland, Jackson Petty, Richard Yuanzhe Pang, Julien Dirani, Julian Michael, and Samuel R Bowman. Gpqa: A graduate-level google-proof q&a benchmark. arXiv preprint arXiv:2311.12022, 2023.\n[33] Zhong Ren, Xiaolu Wang, Milen Angelov, Chris I De Zeeuw, and Zhenyu Gao. Neuronal dynamics of cerebellum and medial prefrontal cortex in adaptive motor timing. Nature Commu- nications, 2025.\n[34] Benoît Ronval, Pierre Dupont, and Siegfried Nijssen. Tagal: Tabular data generation using agentic llm methods. arXiv preprint arXiv:2509.04152, 2025.\n[35] Chengyu Shen, Yanheng Hou, Minghui Pan, Runming He, Zhen Hao Wong, Meiyi Qiang, Zhou Liu, Hao Liang, Peichao Lai, Zeang Sheng, et al. One-eval: An agentic system for automated and traceable llm evaluation. arXiv preprint arXiv:2603.09821, 2026.\n[36] Aaditya Singh, Adam Fry, Adam Perelman, Adam Tart, Adi Ganesh, Ahmed El-Kishky, Aidan McLaughlin, Aiden Low, AJ Ostrow, Akhila Ananthram, et al. Openai gpt-5 system card. arXiv preprint arXiv:2601.03267, 2025.\n[37] Amanpreet Singh, Vivek Natarajan, Meet Shah, Yu Jiang, Xinlei Chen, Dhruv Batra, Devi Parikh, and Marcus Rohrbach. Towards vqa models that can read. In CVPR, 2019.\n[38] Hongjin Su, Ruoxi Sun, Jinsung Yoon, Pengcheng Yin, Tao Yu, and Sercan Ö Arık. Learn-by- interact: A data-centric framework for self-adaptive agents in realistic environments. arXiv preprint arXiv:2501.10893, 2025.\n[39] Peiwen Sun, Shiqiang Lang, Dongming Wu, Yi Ding, Kaituo Feng, Huadai Liu, Zhen Ye, Rui Liu, Yun-Hui Liu, Jianan Wang, et al. Spacevista: All-scale visual spatial reasoning from mm to km. ICML, 2025.\n[40] Huajie Tan, Xiaoshuai Hao, Cheng Chi, Minglan Lin, Yaoxu Lyu, Mingyu Cao, Dong Liang, Zhuo Chen, Mengsi Lyu, Cheng Peng, et al. Roboos: A hierarchical embodied framework for cross-embodiment and multi-agent collaboration. arXiv preprint arXiv:2505.03673, 2025.\n[41] Jiabin Tang, Lianghao Xia, Zhonghang Li, and Chao Huang. Ai-researcher: Autonomous scientific innovation. arXiv preprint arXiv:2505.18705, 2025.\n[42] Qwen Team. Qwen3.5: Accelerating productivity with native multimodal agents, February 2026. URL https://qwen.ai/blog?id=qwen3.5.\n[43] Junyang Wang, Haiyang Xu, Haitao Jia, Xi Zhang, Ming Yan, Weizhou Shen, Ji Zhang, Fei Huang, and Jitao Sang. Mobile-agent-v2: Mobile device operation assistant with effective navigation via multi-agent collaboration. NeurIPS, 2024.\n[44] Peng Wang, Shuai Bai, Sinan Tan, Shijie Wang, Zhihao Fan, Jinze Bai, Keqin Chen, Xuejing Liu, Jialin Wang, Wenbin Ge, et al. Qwen2-vl: Enhancing vision-language model’s perception of the world at any resolution. arXiv preprint arXiv:2409.12191, 2024.\n[45] Weiyun Wang, Zhangwei Gao, Lixin Gu, Hengjun Pu, Long Cui, Xingguang Wei, Zhaoyang Liu, Linglin Jing, Shenglong Ye, Jie Shao, et al. Internvl3.5: Advancing open-source multimodal models in versatility, reasoning, and efficiency. arXiv preprint arXiv:2508.18265, 2025.\n[46] Yubo Wang, Xueguang Ma, Ge Zhang, Yuansheng Ni, Abhranil Chandra, Shiguang Guo, Weiming Ren, Aaran Arulraj, Xuan He, Ziyan Jiang, et al. Mmlu-pro: A more robust and challenging multi-task language understanding benchmark. NeurIPS, 2024.\n[47] Luis Wiedmann, Orr Zohar, Amir Mahla, Xiaohan Wang, Rui Li, Thibaud Frere, Leandro von Werra, Aritra Roy Gosthipaty, and Andrés Marafioti. Finevision: Open data is all you need, 2025. URL https://arxiv.org/abs/2510.17269.\n[48] Dongming Wu, Wencheng Han, Yingfei Liu, Tiancai Wang, Cheng-zhong Xu, Xiangyu Zhang, and Jianbing Shen. Language prompt for autonomous driving. In AAAI, 2025.\n[49] An Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo Zheng, Bowen Yu, Chang Gao, Chengen Huang, Chenxu Lv, et al. Qwen3 technical report. arXiv preprint arXiv:2505.09388, 2025.\n[50] Bokang Yang, Xinyi Sun, Kaituo Feng, Xingping Dong, Dongming Wu, and Xiangyu Yue. From web to pixels: Bringing agentic search into visual perception. arXiv preprint arXiv:2605.12497, 2026.\n[51] John Yang, Carlos E Jimenez, Alexander Wettig, Kilian Lieret, Shunyu Yao, Karthik Narasimhan, and Ofir Press. Swe-agent: Agent-computer interfaces enable automated software engineering. NeurIPS, 2024.\n[52] Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik R Narasimhan, and Yuan Cao. React: Synergizing reasoning and acting in language models. In ICLR, 2022.\n[53] Xiang Yue, Tianyu Zheng, Yuansheng Ni, Yubo Wang, Kai Zhang, Shengbang Tong, Yuxuan Sun, Botao Yu, Ge Zhang, Huan Sun, et al. Mmmu-pro: A more robust multi-discipline multimodal understanding benchmark. In ACL, 2025.\n[54] Fan Zhang, Shulin Tian, Ziqi Huang, Yu Qiao, and Ziwei Liu. Evaluation agent: Efficient and promptable evaluation framework for visual generative models. In ACL, 2025.\n[55] Renrui Zhang, Dongzhi Jiang, Yichi Zhang, Haokun Lin, Ziyu Guo, Pengshuo Qiu, Aojun Zhou, Pan Lu, Kai-Wei Chang, Yu Qiao, et al. Mathverse: Does your multi-modal llm truly see the diagrams in visual math problems? In ECCV, 2024.\n[56] Yi-Fan Zhang, Huanyu Zhang, Haochen Tian, Chaoyou Fu, Shuangqing Zhang, Junfei Wu, Feng Li, Kun Wang, Qingsong Wen, Zhang Zhang, et al. Mme-realworld: Could your multimodal llm challenge high-resolution real-world scenarios that are difficult for humans? ICLR, 2025.\n[57] Yue Zhao, Jin-Tao Wu, Jia-Bin Feng, Xin-Yu Cai, Xin-Tai Wang, Luxi Wang, Wei Xie, Yan Gu, Jun Liu, Wei Chen, et al. Dual and plasticity-dependent regulation of cerebello-zona incerta circuits on anxiety-like behaviors. Nature communications, 2025.\n[58] Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu, Yonghao Zhuang, Zi Lin, Zhuohan Li, Dacheng Li, Eric Xing, et al. Judging llm-as-a-judge with mt-bench and chatbot arena. NeurIPS, 2023.\n[59] Kaijie Zhu, Jiaao Chen, Jindong Wang, Neil Zhenqiang Gong, Diyi Yang, and Xing Xie. Dyval: Dynamic evaluation of large language models for reasoning tasks. In ICLR, 2024.\n[60] Lianghui Zhu, Xinggang Wang, and Xinlong Wang. Judgelm: Fine-tuned large language models are scalable judges. arXiv preprint arXiv:2310.17631, 2023.\n[61] Zeyu Zhu, Kevin Qinghong Lin, and Mike Zheng Shou. Paper2video: Automatic video generation from scientific papers. arXiv preprint arXiv:2510.05096, 2025.\n[62] Mingchen Zhuge, Changsheng Zhao, Dylan Ashley, Wenyi Wang, Dmitrii Khizbullin, Yunyang Xiong, Zechun Liu, Ernie Chang, Raghuraman Krishnamoorthi, Yuandong Tian, et al. Agent- as-a-judge: Evaluate agents with agents. ICML, 2024.",
+      "metadata": {
+        "chunk_id": 29,
+        "page_number": 10,
+        "page_range": "10",
+        "type": "section",
+        "title": "References",
+        "word_count": 1884
+      }
+    },
+    {
+      "content": "A Experiment Details A.1 Benchmarks Generated from Benchmark Agent . . . . . . . . . . . . . . . . . . . A.2 LLM-as-Judge protocol details . . . . . . . . . . . . . . . . . . . . . . . . . . . . A.3 Implementation Details . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . B Experiment Results B.1 Text-only benchmark experiments . . . . . . . . . . . . . . . . . . . . . . . . . . B.2 Audio-based and Omni-based benchmark experiments . . . . . . . . . . . . . . . D Benchmark Visualization D.1 Text-only Cases . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . D.2 Audio-based Cases . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15 15 15 18 18 18 19 19 20 20 23",
+      "metadata": {
+        "chunk_id": 30,
+        "page_number": 14,
+        "page_range": "14",
+        "type": "table",
+        "title": "Appendix Contents",
+        "word_count": 239
+      }
+    },
+    {
+      "content": "Table A7: User query and its subtasks generated from our framework.Table A7 and Table A8 provide concrete examples of user queries and the subtasks derived from them within our framework. Rather than prescribing fixed benchmark formats, the framework starts from high-level evaluation intents and operationalizes them into explicit reasoning requirements. As shown in the table, a single user query is decomposed into a small set of subtasks that capture the core cognitive challenges implied by the request, such as integrating dispersed evidence, reconciling differing perspectives, or tracing causal and temporal relations. These examples span text-only, audio-only, and multimodal settings. The table highlights the framework’s ability to translate abstract evaluation requirements into structured benchmark specifications across a wide range of domains and modalities.",
+      "metadata": {
+        "chunk_id": 31,
+        "page_number": 15,
+        "page_range": "15",
+        "type": "section",
+        "title": "A.1 Benchmarks Generated from Benchmark Agent",
+        "word_count": 122
+      }
+    },
+    {
+      "content": "Domain User Query Subtasks Text-only Benchmarks Core Event Reconstruction From Multiple Accounts; I want to build a benchmark that evaluates whether a model can integrate multiple Bias and Reliability Assessment Across Narratives; Perspective narrative accounts of the same underlying event and reason about it in a viewpoint-aware Latent Event Property Inference From Combined Accounts way. The model must reconcile different perspectives into a coherent understanding of what actually happened and answer related questions. Cross-Lingual Fact Integration (Multi-Hop); Multilingual I want to build a cross-lingual benchmark to test whether models can integrate clues and perform reasoning in a multilingual text setting. The information will not be concentrated in a single language, but instead scattered across different languages. Cross-Lingual Logical Consistency Check; Cross-Lingual Multi-Hop Entity & Relation Reasoning; Cross-Lingual Procedural & Causal Reasoning Cross-Turn Information Integration; Long-Dialog I need the benchmark to evaluate a model’s ability to reason over multi-speaker text Perspective and Consistency Reasoning; Reasoning dialogues. The model must integrate information distributed across multiple speakers Event Reconstruction from Dialogue and dialogue turns to answer questions. Reasoning I need the benchmark to evaluate whether a model can follow and verify multi-step mathematical proofs instead of only validating the final conclusion. The model should Faulty Step Localization; Local Inference Step Verification be able to pinpoint the faulty step through stepwise reasoning over the full proof. Audio-only Benchmarks Speaker Role And Stance Identification; Audio-based Reasoning I want to evaluate a model’s ability to understand and reason over multi-speaker audio conversations. The model should integrate information across speakers and turns in real-world speech to answer challenging reasoning questions. Implicit Constraint And Requirement Inference; Causal And Temporal Relationship Reasoning; Cross-Turn Information Integration Utterance-Level Multilingual Intent Recognition; Multilingual I want to evaluate the model’s comprehension of mixed-language speech-based con- versations. The model should not only recognize and understand spoken content in Cross-Language Multi-Hop Reasoning Over Dialogue multiple languages, but also track the dialogue context and logical structure across turns, and finally answer a question that requires cross-turn, cross-language reasoning. Speaker Count And Identity In Noisy Scenes; Noise Robust- I need the benchmark to evaluate whether a model can understand multi-speaker speech in noisy, real-world environments. The model should be able to distinguish speakers, focus on a target speaker, and extract the speaker’s key information and intentions Target Speaker Following In Crowded Audio; Key Information Extraction From Target Speaker; Contextual Resolution Of Ambiguous Content In Noise despite background interference.",
+      "metadata": {
+        "chunk_id": 32,
+        "page_number": 15,
+        "page_range": "15",
+        "type": "table",
+        "title": "A.1 Benchmarks Generated from Benchmark Agent",
+        "word_count": 401
+      }
+    },
+    {
+      "content": "We provide additional details of LLM-as-Judge evaluation protocol. Given the user requirement and the generated benchmark samples, the judge evaluates quality from two complementary perspectives: whether the benchmark as a whole faithfully reflects the user’s intended evaluation goal, and whether each individual sample is well-formed, well-grounded, and capable of testing the intended signal.\nAccordingly, we report one benchmark-level metric, User-Intention Alignment (UIA), and five item-level metrics: Format & Schema Quality (FSQ), Question–Answer Coherence (QAC), Context– Question Correspondence (CQC), Target Signal Dependency (TSD), and Skill-Specific Challenge (SSC). All metrics are scored on a 1–5 scale, where 1 indicates severe quality issues and 5 indicates high quality. For compactness, we present representative anchors for scores 1, 3, and 5; scores 2 and 4 correspond to intermediate cases.\nTable A8: User query and its subtasks generated from our framework.",
+      "metadata": {
+        "chunk_id": 33,
+        "page_number": 15,
+        "page_range": "15",
+        "type": "section",
+        "title": "A.2 LLM-as-Judge protocol details",
+        "word_count": 136
+      }
+    },
+    {
+      "content": "Domain User Query Subtasks Text–Image Benchmarks Art1 I want to build a benchmark to evaluate whether a model can infer the approximate Artwork Period Identification historical period of an artwork using image-only information. Artwork-to-entity grounding with linked biography fact QA; Art2 I want to build a multimodal benchmark where artwork images serve as implicit clues. The model must infer the hidden artwork, artist, or period and reason about related art-historical knowledge beyond the visible image. Period/movement/region inference to historical-context linkage QA; Image-grounded artwork/artist inference to oeuvre/atelier-network relation QA Medical I need a benchmark that evaluates whether a model can perform genuine medical diagnosis through multi-step reasoning. Given medical imaging inputs, the model must Differential Diagnosis Discrimination; Key Finding Selection Under Distractive Cues identify relevant abnormalities, justify their diagnostic significance, and distinguish between competing diseases using structured clinical reasoning, despite subtle findings and misleading cues. Animal This benchmark evaluates fine-grained visual categorization of animals from images, focusing on dog breeds and bird species. Models must distinguish between visually Dog Breed Identification; Bird Species Identification similar classes using subtle cues. Regional Localization From Highlighted Map Area; Geography I want a benchmark to evaluate whether a multimodal model can recognize a region from a base map and answer historical questions about that region through multi-step reasoning. Territorial Change Reasoning From Region Localization; Diplomacy and Conflict Reasoning From Region Context; Cultural-Historical Regional Identity Reasoning Math I need the benchmark to evaluate whether a model can follow and verify multi-step mathematical proofs (in the image) instead of only validating the final conclusion. The Faulty Step Localization; Local Inference Step Verification model should be able to pinpoint the faulty step through stepwise reasoning over the full proof. Code I need the benchmark to determine whether a model can perform multi-step software debugging on realistic code snippets. The model should be able to identify whether a Behavioral Impact Reasoning; Semantic Repair Selection defect exists, understand its root cause and behavioral impact, and fix the issue without changing the intended functionality. Audio-Image Benchmarks Event Sequence and Temporal Evolution Reasoning; Omni- I need the benchmark to determine whether a model can reason jointly over images Inferring Intentions and Goals from Joint Cues; Understanding and spoken dialogue. The model should use both modalities together to understand Counterfactual and Contrastive Scenario Understanding the underlying situation and answer questions that require non-trivial reasoning, rather than relying on either vision or speech alone.",
+      "metadata": {
+        "chunk_id": 34,
+        "page_number": 16,
+        "page_range": "16",
+        "type": "table",
+        "title": "A.2 LLM-as-Judge protocol details",
+        "word_count": 400
+      }
+    },
+    {
+      "content": "UIA is evaluated at the benchmark level. It measures whether the generated benchmark faith- fully operationalizes the user’s stated evaluation intent, including coverage of core capabilities, diversity over relevant scenarios, and absence of systematic drift.\n3 The benchmark partially matches the goal, but important capabilities, scenarios, or question forms are missing.\n5 The benchmark comprehensively and faithfully reflects the user intent with strong coverage, meaningful diversity, and minimal drift.",
+      "metadata": {
+        "chunk_id": 35,
+        "page_number": 16,
+        "page_range": "16",
+        "type": "section",
+        "title": "User-Intention Alignment (UIA)",
+        "word_count": 69
+      }
+    },
+    {
+      "content": "FSQ evaluates whether an item is structurally valid and ready for reliable evaluation, including required fields, modality inputs, options when needed, and answer format.\n1 The item is unusable due to missing or unparsable components, such as the question, answer, required options, or input.\n3 The item is usable but contains minor field, formatting, or answer-type inconsistencies.\n5 The item is fully clean, explicit, internally consistent, and evaluation-ready.\nQAC evaluates whether the question and labeled answer form a valid semantic pair, independent of whether the provided context is sufficient.\n3 The answer partially fits, but the Q/A relation is under-specified, overly broad or narrow, or interpretation-dependent.\n5 The question and labeled answer form an exact, direct, and unambiguous Q/A pair.\nContext–Question Correspondence (CQC)\nCQC evaluates whether the provided context or media supplies sufficient grounding for the question and labeled answer. For items that intentionally involve external knowledge, the input should still provide enough anchors, such as entities, events, scenes, or descriptions, to justify the intended inference or retrieval path.\n1 The context or media is absent, inaccessible, wrong-topic, or provides no usable grounding.\n3 The context provides partial grounding, but the support is incomplete, loosely scoped, or underdetermined.\n5 The context tightly supports the intended reasoning path with clear, specific, and sufficient evidence.",
+      "metadata": {
+        "chunk_id": 36,
+        "page_number": 16,
+        "page_range": "16",
+        "type": "section",
+        "title": "Format & Schema Quality (FSQ)",
+        "word_count": 213
+      }
+    },
+    {
+      "content": "TSD evaluates whether solving the item truly requires the benchmark’s intended capability or modality signal, rather than relying on superficial cues, shortcuts, or unrelated knowledge.\n1 The item does not depend on the intended capability or modality signal; it is off-goal or shortcut-solvable.\n3 The target signal is useful but not strictly necessary, since partial reasoning or shortcuts may still work.\n5 Correct solving essentially requires the intended capability or modality signal end-to-end.\nSkill-Specific Challenge (SSC)\nSSC evaluates the depth and non-triviality of the reasoning required by the target skill, assuming the item is otherwise valid and answerable.\n1 The item is trivial, off-skill, or solvable by direct copying or surface matching.\n5 The item requires strong but fair target-skill reasoning, involving compositional or multi-step inference with meaningful intermediate conclusions.\nScoring principles. The judge is instructed to attribute errors to the most relevant dimension. Schema or formatting issues are scored under FSQ, while mismatches between the question and labeled answer are scored under QAC. When a coherent question–answer pair is not supported by the provided context, the error is assigned to CQC rather than QAC. Items that are valid and well-grounded but too easy or shortcut-solvable may still receive high FSQ, QAC, and CQC, but should receive lower TSD or SSC. Difficulty caused by missing, ambiguous, or broken evidence is not considered valid challenge, and should lower CQC rather than increase SSC.",
+      "metadata": {
+        "chunk_id": 37,
+        "page_number": 17,
+        "page_range": "17",
+        "type": "section",
+        "title": "Target Signal Dependency (TSD)",
+        "word_count": 232
+      }
+    },
+    {
+      "content": "In addition to LLM-based tools, benchmark realization relies on a set of pure tools. Pure tools are non-LLM, deterministic operators that perform parameterized transformations on data without introducing semantic interpretation or free-form generation.",
+      "metadata": {
+        "chunk_id": 38,
+        "page_number": 18,
+        "page_range": "18",
+        "type": "section",
+        "title": "Implementation Details",
+        "word_count": 33
+      }
+    },
+    {
+      "content": "Synthesis tools create or modify sample content with explicit parameters. They are used to build perceptual inputs, add controlled variations, or obtain auxiliary information needed for sample construction. Each operation is parameterized, making the transformation process easy to trace and reproduce.\nRepresentative synthesis tools include:\n• Text-to-speech converts textual inputs into speech audio with specified voices, speaking styles, and acoustic conditions;\n• Image resizing adjusts image resolution or aspect ratio according to predefined target sizes;\n• Audio mixing combines multiple audio streams under controlled rules such as relative volume, temporal alignment, and source placement;\n• Noise injection adds background noise or acoustic perturbations with specified noise types and intensity levels;\n• Web search retrieves external information according to specified queries, supporting sample grounding, enrichment, or verification.",
+      "metadata": {
+        "chunk_id": 39,
+        "page_number": 18,
+        "page_range": "18",
+        "type": "section",
+        "title": "A.3.1 Synthesis Tools",
+        "word_count": 126
+      }
+    },
+    {
+      "content": "Programmatic transformers are used for deterministic data restructuring and format-level processing. Unlike content synthesis tools, they do not introduce new semantic information or change the intended meaning of a sample. Instead, they operate on file formats, metadata, field organization, and sample structure to make the data compatible with downstream usage.\nRepresentative programmatic transformers include:\n• File conversion converts data across formats, encodings, or storage representations while preserv- ing the original content;\n• Metadata editing adds, removes, normalizes, or updates structured attributes such as source information, modality tags, and transformation records;\n• Content decomposition separates a complex sample into smaller usable units based on predefined rules, annotations, or temporal/spatial boundaries;\n• Structured field patching updates specific fields in a sample representation, such as renaming keys, moving fields, filling derived attributes, or replacing predefined segments.\nThese tools provide reliable low-level operations for organizing and standardizing data, ensuring that samples can be processed consistently without introducing uncontrolled semantic changes.",
+      "metadata": {
+        "chunk_id": 40,
+        "page_number": 18,
+        "page_range": "18",
+        "type": "section",
+        "title": "A.3.2 Programmatic Transformers",
+        "word_count": 156
+      }
+    },
+    {
+      "content": "In the main paper, we report representative results to show that the generated benchmarks can provide useful signals for model comparison. Here, we provide the full supplementary results for the remaining text-only and audio-text benchmarks.",
+      "metadata": {
+        "chunk_id": 41,
+        "page_number": 18,
+        "page_range": "18",
+        "type": "section",
+        "title": "B Experiment Results",
+        "word_count": 35
+      }
+    },
+    {
+      "content": "Table B5 reports results on text-only benchmarks, including Multi-Perspective (T), Long-Dialog Reasoning (T), Multilingual (T), and Math-Reasoning (T). The results show clear performance gaps across model families and model scales. Larger models generally achieve higher accuracy than smaller ones, and different benchmark dimensions exhibit different levels of difficulty. For example,the text-only benchmarks show strong scaling trends across Qwen2.5, Qwen3, and Qwen3.5 models. These results suggest that the generated benchmarks are not only valid evaluation sets, but also have sufficient discriminative power for comparing models with different capability levels.",
+      "metadata": {
+        "chunk_id": 42,
+        "page_number": 18,
+        "page_range": "18",
+        "type": "section",
+        "title": "B.1 Text-only benchmark experiments",
+        "word_count": 88
+      }
+    },
+    {
+      "content": "Figure B5: Performance comparison of various LLMs on text-only benchmarks generated from our Benchmark Agent.",
+      "metadata": {
+        "chunk_id": 43,
+        "page_number": 19,
+        "page_range": "19",
+        "type": "figurecaption",
+        "title": "B.1 Text-only benchmark experiments",
+        "word_count": 15
+      }
+    },
+    {
+      "content": "Table B6 reports results on audio-text and image-audio-text benchmarks, including Noise Robustness (A), Audio-based Reasoning (A), Multilingual (A) and Omni-Understanding (O). The audio-text benchmarks reveal a substantial gap between Qwen2.5-Omni-3B and Qwen2.5-Omni-7B, which also reveal the discriminative power of these benchmarks generated from Benchmark Agent.\nFigure B6: Evaluation of different Omni-LLMs on audio-based benchmarks generated from Benchmark Agent.",
+      "metadata": {
+        "chunk_id": 44,
+        "page_number": 19,
+        "page_range": "19",
+        "type": "section",
+        "title": "B.2 Audio-based and Omni-based benchmark experiments",
+        "word_count": 58
+      }
+    },
+    {
+      "content": "Despite the promising results, our current framework still has several minor limitations. First, the generated benchmarks are mainly validated on representative tasks, while more domain-specific scenarios can be further explored. In future work, we will expand the benchmark pool to cover broader domains and more diverse user requirements. Second, Benchmark Agent is partly bounded by the coverage of available tools. Since our system is built in a modular agentic manner, it can be\nnaturally extended by seamlessly integrating more tools into the tool library. In future work, we will expand the available tool set and enable the agent to flexibly select, combine, and invoke different tools. Third, although the Benchmark Agent can substantially reduce human effort, light-weight human review is still useful. We plan to incorporate more interactive feedback mechanisms so that experts can efficiently refine generated benchmarks with minimal additional cost. Overall, these limitations do not affect the main conclusion of this work, but point to practical directions for making autonomous benchmark construction more general, flexible, and user-friendly.",
+      "metadata": {
+        "chunk_id": 45,
+        "page_number": 19,
+        "page_range": "19",
+        "type": "section",
+        "title": "C Limitations",
+        "word_count": 169
+      }
+    },
+    {
+      "content": "The following text-only examples are automatically generated by our Benchmark Agent and are intentionally constructed to be clear, self-contained, and logically decidable from the given context alone. In all cases, the ground-truth labels are unambiguous. The model errors observed below therefore reflect genuine failures in reasoning in the benchmark samples, illustrating the discriminative power of the generated test cases.\nMultilingual understanding: In this example, the premise and hypothesis describe two entirely unrelated situations (a man making a balloon figure versus a woman cutting celery), yielding a neutral relation. The model instead predicts contradiction, indicating confusion between semantic difference and logical incompatibility in cross-lingual NLI.",
+      "metadata": {
+        "chunk_id": 46,
+        "page_number": 20,
+        "page_range": "20",
+        "type": "section",
+        "title": "D.1 Text-only Cases",
+        "word_count": 104
+      }
+    },
+    {
+      "content": "“Premise statements (about one situation): EN: Man with black shirt and sunglasses makes something out of a balloon. ES: Un hombre con camisa negra y gafas de sol está creando una figura con un globo. FR: Un homme portant une chemise noire et des lunettes de soleil façonne une sculpture avec un ballon. DE: Ein Mann mit schwarzem Hemd und Sonnenbrille formt aus einem Luftballon eine Figur. IT: Un uomo con camicia nera e occhiali da sole sta modellando un animale di palloncino. Hypothesis statements (about another situation): EN: A woman cuts celery. ES: Una mujer corta apio en la tabla de cortar. FR: Une femme découpe du céleri en morceaux. DE: Eine Frau schneidet Stangensellerie in Scheiben. IT: Una donna tranche du céleri sur une planche de cuisine.”“ Step 1: Let V and W be two vector spaces over a field F, and let U = V + W denote their sum. We want to show that U is a vector space.\nStep 2: By definition, the sum U = V + W consists of all elements of the form v + w, where v ∈ V and w ∈ W. Thus every u ∈ U can be written as u = v + w with v ∈ V and w ∈ W.\nStep 3: We check closure under addition in U. Take arbitrary u1,u2 ∈ U. By the above definition, each ui has a unique representation ui = vi + wi with vi ∈ V and wi ∈ W. Using these unique decompositions, we obtain\nu1 + u2 = (v1 + w1) + (v2 + w2) = (v1 + v2) + (w1 + w2),\nwhere v1 + v2 ∈ V and w1 + w2 ∈ W (since V and W are vector spaces). Hence u1 + u2 ∈ U.\nStep 4: Next, we verify closure under scalar multiplication. Let u ∈ U and c ∈ F. Then u = v + w for some v ∈ V and w ∈ W, and\nc · u = c · (v + w) = c · v + c · w,\nwhere c · v ∈ V and c · w ∈ W because V and W are vector spaces. Thus c · u ∈ U.\nStep 5: We check that U contains the zero vector. Since 0 is the zero vector in both V and W, we have 0 ∈ V and 0 ∈ W, and therefore\n0 = 0 + 0 ∈ U,\nso U contains the zero vector.\nStep 6: The remaining vector space axioms (associativity and commutativity of addition, existence of additive inverses, and distributive laws) are inherited from V and W through the expressions u = v + w, and the previous steps ensure closure and the presence of the zero vector. Hence U satisfies all the axioms of a vector space.\nConclusion: Therefore, U = V + W is a vector space. ”",
+      "metadata": {
+        "chunk_id": 47,
+        "page_number": 20,
+        "page_range": "20",
+        "type": "section",
+        "title": "Context:",
+        "word_count": 489
+      }
+    },
+    {
+      "content": "“Carefully compare the two multilingual sets of sentences below: the first group labeled as premise statements and the second group labeled as hypothesis statements. Consider what each group describes and how they relate to each other. Based only on these statements, what is the logical relationship between the premise statements and the hypothesis statements?”“You are given a step-by-step proof about the sum U = V + W of two vector spaces. The full proof is provided separately in the context. Exactly one of the numbered steps in that proof contains a faulty inference; all other numbered steps are logically correct. Which step contains the faulty inference?” A. Step 4 B. Step 5 C. Step 3 D:. Step 2“Listen to the mixed-language conversation about Ana’s legal situation. In the dialogue, one person clarifies that Ana’s case is not a typical lawsuit but more like a mediation or negotiation. Who says that her case is not a typical lawsuit?”\nA. The company’s lawyer who explains that it is not a typical lawsuit. B. A representative of the company that sent the letter. C. Luis, Ana’s friend who initially reassures her. D. Ana, the person who received the letter and is worried about being sued. Answer: “A”“In the conversation, Speaker 2 says, “That is so sweet.” What does the word “That” refer to in context? Choose ONE option.”“Looking at this artwork, which historical period does its visual style most likely belong to?” A. Late traditional ink landscape period; B. Early modern revival of classical landscape painting; C. High contemporary reinterpretation of classical landscape; D. General pre-modern literati landscape period. Answer: “B”“A 62-year-old man with a history of hypertension and hyperlipidemia presents with sudden onset vertigo, diplopia, slurred speech, and difficulty walking. In the emergency department, he becomes progressively drowsy with intermittent episodes of decreased responsiveness. Neurologic examination shows dysarthria, bilateral limb ataxia, and impaired horizontal eye movements. Based on the FLAIR axial brain MRI image provided, from which artery did the embolus most likely originate?” A. Proximal basilar artery;\nB. Vertebral artery;Which species does the bird in the image belong to? Choose one option. A. Carrion Crow B. Large-billed Crow C. American Crow D. Common Raven Answer: BYou will be given a numbered proof of the standard theorem that a non-zero polynomial p(x) over a field F with degree n has at most n distinct roots in F, argued by factoring out linear factors corresponding to its distinct roots and comparing degrees. Based on the numbered steps in the proof in the context, choose which step contains a faulty piece of reasoning.\nA. Step 3 B. Step 4 C. Step 2 D:. Step 1",
+      "metadata": {
+        "chunk_id": 48,
+        "page_number": 20,
+        "page_range": "20",
+        "type": "section",
+        "title": "Question:",
+        "word_count": 441
+      }
+    },
+    {
+      "content": "“The user provided two sets of statements: premises and hypotheses, each in multiple languages. The task is to determine the logical relationship between them. First, I need to understand what each set is describing: the premise statements talk about a man with a black shirt and sunglasses making something out of a balloon, while the hypothesis statements describe a woman cutting celery. The subjects are different (man vs. woman), the actions are different (making a balloon figure vs. cutting celery), and the objects are unrelated (balloons vs. celery). Since there’s no overlap in details, there’s no contradiction, and there’s also no entailment because the hypothesis isn’t a logical consequence of the premise. Therefore, the relationship is neutral, as the two statements don’t affect each other’s truth.“\n<answer> B </answer>\nMath Reasoning: In this case, This example has a single, well-defined error point: Step 3 explicitly relies on a unique decomposition u = v + w, which is not guaranteed for a general sum of vector\nspaces. The correct answer therefore unambiguously identifies Step 3 as the faulty step. The model instead selects Step 2, indicating an error in reasoning about where a stated assumption is actually used to justify a conclusion.“The question asks us to identify the faulty step in the proof claiming that the sum of two vector spaces U = V + W is itself a vector space. The proof is divided into Steps 1 through 6. Examining Step 2, it claims that every element u ∈ U can be written uniquely as u = v + w, where v ∈ V and w ∈ W. However, this statement is generally false. While it is true that every element of U = V + W can be written as a sum v + w, such a decomposition need not be unique. Uniqueness holds only when the sum is a direct sum, that is, when V ∩ W = {0}. Therefore, the assertion of uniqueness in Step 2 is incorrect unless additional conditions are imposed on V and W. In general, elements of V + W may admit multiple representations as sums of elements from V and W. This incorrect assumption propagates into Step 3, where the proof refers to the unique decompositions of elements u1 and u2. Although closure under addition does not actually depend on uniqueness of decomposition, the logical justification given in Step 3 relies on the false claim made in Step 2. Conclusion. The faulty step in the proof is Step 2. Therefore, the correct answer is Option D.”\n<answer> D </answer>\nMulti-Dialog Reasoning: For this case, both statements are anchored to the same moment in the call, so their temporal relation is identity. The model predicts before, suggesting reliance on dialogue turn order rather than explicit temporal cues such as “at the same time.”\nContext: Host: Welcome back to Market Focus. Today we’re talking about Sun Microsystems’ latest quarterly results. Scott, thanks for joining us.\nReporter: Let’s talk about those issues. In your official statement today, you commented on what hurt performance.\nScott: In that statement, I said the company’s performance was hampered by problems tied to the introduction of a major new family of computers in April.\nAnalyst: And at the same time, I said on this call that those April product introductions really reshaped your product mix.\nScott: Exactly, and one of those new computers, the Sparcstation 1, accounted for nearly half of the 28,000 systems we shipped in the quarter.\nReporter: More than two-thirds of the systems shipped were products introduced in April, correct? Scott: That’s right. But problems in manufacturing, forecasting demand, and getting the bugs out of a new management information system made it extremely difficult for us to meet demand for those newest computers well into the summer.\nAnalyst: Those same problems also resulted in a $20.3 million loss in the fourth quarter ended June 30, if I recall.\nHost: Thanks everyone for the insights.\nQuestion: “Based on the audio, in the conversation, what is the temporal relation between the moment when Scott said in his official statement that the company’s performance was hampered by the new computer family and the moment when the analyst said on the call, at that same point in time, that those April product introductions reshaped Sun’s product mix?The question is about the temporal relation between two statements made by Scott and the analyst. The user wants to know if one happened before, after, or at the same time as the other. First, I need to look at the conversation. The user provided a transcript where Scott and the analyst are discussing Sun Microsystems’ quarterly results. The specific part in question is when Scott mentions in his official statement that the company’s performance was hampered by the new computer family introduced in April. Then, the analyst says on the call that those April product introductions reshaped the product mix. Looking at the dialogue: Scott says, \"In that statement, I said the company’s performance was hampered by problems tied to the introduction of a major new family of computers in April.\" Then the analyst responds, \"And at the same time, I said on this call that those April product introductions really reshaped your product mix.\" The key here is the phrase \"at the same time\" used by the analyst. This indicates that when the analyst made that comment, it was during the same call or discussion as Scott’s statement. So, the analyst’s statement is made in response to Scott’s statement. Therefore, Scott’s statement came first, and the analyst’s statement follows. The temporal relation is that Scott’s statement is before the analyst’s. The options are A (AFTER), B (IDENTITY), C (BEFORE), D (IBEFORE). Since the analyst’s statement is after Scott’s, the correct answer would be C (BEFORE) because Scott’s statement is before the analyst’s. Alternatively, if the analyst’s statement is in the same moment, maybe IDENTITY, but the wording says \"at the same time\" in the context of the call, which might mean they are referring to the same event. Wait, but Scott’s statement is in the official statement, and the analyst is referring to it during the call. So the analyst is commenting on Scott’s statement. Therefore, Scott’s statement is before the analyst’s. So the answer is C (BEFORE).\n<answer> C </answer>",
+      "metadata": {
+        "chunk_id": 49,
+        "page_number": 20,
+        "page_range": "20",
+        "type": "section",
+        "title": "Qwen3-14B: </think>",
+        "word_count": 1048
+      }
+    },
+    {
+      "content": "The following audio-based examples are designed to evaluate a model’s ability to reason over spoken content, including speaker attribution, cross-lingual understanding, and discourse-level reference resolution. Although transcripts are shown for clarity, the original inputs are audio, and the correct answers are unambiguous from the spoken interaction. The observed errors reflect limitations in audio-based reasoning rather than ambiguity in the benchmark samples.\nMultilingual Audio understanding In the dialogue, the lawyer explicitly states that Ana’s case is “not a typical lawsuit” and instead a mediation or negotiation. The model incorrectly attributes this clarification to Ana, indicating a failure in speaker attribution under mixed-language conditions, despite the semantic content being clear.\nspeech-transcript (originally as audio input):\nSpeaker Ana: So, I got this letter from the company’s lawyer, and honestly I’m freaking out about a demanda.\nSpeaker Luis: Tell me what happened, porque this sounds more like a complaint than a full lawsuit. Speaker Lawyer: From what I see, this is not a typical lawsuit, no es un caso típico; Speaker Lawyer: it’s more like a mediation request.\nSpeaker Ana: So they’re not really suing me todavía, just pushing me to settle the dispute, ¿verdad? Speaker Lawyer: Exactly, es más bien una negociación formal, and we can respond calmly and protect your rights.\nSpeaker Ana: So they’re not really suing me todavía, just pushing me to settle the dispute, ¿verdad? Speaker Lawyer: Exactly, es más bien una negociación formal, and we can respond calmly and protect your rights.",
+      "metadata": {
+        "chunk_id": 50,
+        "page_number": 23,
+        "page_range": "23",
+        "type": "section",
+        "title": "D.2 Audio-based Cases",
+        "word_count": 244
+      }
+    },
+    {
+      "content": "“The person who clarifies that Ana’s case is not a typical lawsuit is Ana herself. She says, “No, es un caso típico. It’s more like a mediation request.” This shows that she is the one who explains that her case is not a typical lawsuit.”\n<answer>D</answer>\nAudio-based Reasoning Here, the word “That” refers to Speaker 1’s explanation that they find the current stage of the long-term relationship exciting. The model instead links the reference to an earlier moment in the conversation, revealing difficulty in resolving discourse-level anaphora and maintaining the correct local context in spoken dialogue.\nspeech-transcript (originally as audio input): Speaker 1: So? Speaker 2: I feel really sad that we’re not...really there anymore. Speaker 1: Oh wow! Is that what this all have been about? Speaker 2: Wasn’t it a lot more exciting when we were y’know all over each other all the time? Speaker 1: Yeah that was great. That was really great! But to tell you the truth, I’m more excited about\nSpeaker 1: Yeah! I’ve never been in a relationship that’s lasted this long before. Y’know to get past the beginning and still be around each other all the time, I think that’s pretty incredible. And the fact that this is happening all with you, yeah I think that’s pretty exciting.\nSpeaker 2: That is so sweet. I know that I was acting a little crazy but umm, I feel the same way.",
+      "metadata": {
+        "chunk_id": 51,
+        "page_number": 23,
+        "page_range": "23",
+        "type": "section",
+        "title": "Qwen2.5-Omni-7B:",
+        "word_count": 238
+      }
+    },
+    {
+      "content": "“Speaker 1 expresses sadness about their current situation not being like the past. Speaker 2 responds with \"That was great. That was really great.\" This indicates that \"that\" refers to the time when they were \"all over each other all the time,\" which Speaker 1 had just mentioned as being more exciting. Therefore, \"that\" refers to the past time they were together frequently”\n<answer> B </answer>“The painting features dramatic, towering mountains rendered in rich, layered colors—especially the prominent use of blue-green (qing) pigments—along with misty clouds, pine trees, and a winding wall or fortress, suggesting a grand, monumental landscape. The composition is vertical and dynamic, with strong contrasts between solid rock and ethereal clouds. The presence of calligraphy in the upper left corner, including a date and signature, is typical of traditional Chinese painting. The style, particularly the use of color and the dramatic scale, aligns with the late traditional period, especially the Qing dynasty or early 20th century, when artists revived and reinterpreted classical styles with more vivid pigments and expressive brushwork. While it shows classical influences, the bold coloration and composition suggest a later, more stylized interpretation than pure pre-modern literati painting. It is not clearly contemporary or early modern revival, but rather a late traditional synthesis”\n<answer> A </answer>\nMedical This case requires localizing the embolic source by integrating the FLAIR axial MRI with neurological symptoms. The correct answer (distal basilar artery) is supported by brainstem involvement together with progressive drowsiness, a high-weight cue characteristic of distal basilar (“top-of-the-basilar”) syndromes. The model instead predicts proximal basilar artery by overem- phasizing generic brainstem involvement and neglecting impaired consciousness, resulting in a prioritization and evidence-integration failure rather than true clinical ambiguity.“The clinical presentation—sudden vertigo, diplopia, slurred speech, ataxia, impaired horizontal eye movements, and progressive drowsiness—is classic for a brainstem stroke, particularly involving the pons. The MRI is a FLAIR sequence, and the hyperintense signal in the midline posterior brainstem (around the pons and midbrain) suggests acute ischemia in the territory of the basilar artery.The bilateral involvement of the pons and midbrain, along with the clinical features of bilateral limb ataxia and impaired horizontal gaze (suggesting involvement of the paramedian pontine reticular formation or medial longitudinal fasciculus), points to a proximal basilar artery occlusion. This would affect the paramedian branches supplying the pons and midbrain.Distal basilar artery occlusion typically affects the superior cerebellar arteries and may cause cerebellar signs, but the clinical picture here is more consistent with pontine involvement. Vertebral artery occlusion usually causes lateral medullary syndrome (Wallenberg), which doesn’t match the bilateral ataxia and midline brainstem signs. Posterior cerebral artery occlusion typically causes visual field deficits, not the brainstem signs seen here.Thus, the most likely origin of the embolus is the proximal basilar artery.\n<answer> A </answer>\nBecause Section D will present numerous text-related and audio-related benchmarks, we provide additional benchmark examples related to images in this section. Figure 4 shows some representative benchmark samples related to art and code. The additional benchmark samples related to animals and mathematics are shown below.",
+      "metadata": {
+        "chunk_id": 52,
+        "page_number": 24,
+        "page_range": "24",
+        "type": "section",
+        "title": "Qwen2.5-Omni-7B: </think>",
+        "word_count": 504
+      }
+    },
+    {
+      "content": "The following image-based examples evaluate a model’s ability to infer high-level labels from visual evidence under domain-specific conventions. In both cases, the benchmark annotations are well-supported by multiple converging cues present in the images, leaving little room for genuine ambiguity. The observed errors therefore do not arise from annotation noise or underspecified samples, but instead reflect failures in visual reasoning and evidence integration by the model.\nArt The sample is labeled as an early modern revival of classical landscape painting, consistent with its saturated blue–green (qinglü) palette and visually amplified, revivalist presentation. The model instead assigns it to a late traditional literati period by equating the use of classical motifs and calligraphy with historical continuity, failing to distinguish modern revival from late-stage traditional practice. This reflects a category-boundary error: the model collapses “traditional style” into “traditional period,” rather than recognizing deliberate modern re-appropriation.",
+      "metadata": {
+        "chunk_id": 53,
+        "page_number": 24,
+        "page_range": "24",
+        "type": "section",
+        "title": "D.3 Image-based Cases",
+        "word_count": 143
+      }
+    }
+  ]
+}
