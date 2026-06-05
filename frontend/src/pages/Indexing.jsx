@@ -90,7 +90,8 @@ const Indexing = () => {
 
   const fetchCollections = async () => {
     try {
-      const response = await fetch(`${apiBaseUrl}/collections}`);
+      // Fix missing provider query parameter and extra closing brace in URL
+      const response = await fetch(`${apiBaseUrl}/collections?provider=${selectedProvider}`);
       const data = await response.json();
       setCollections(data.collections || []);
     } catch (error) {
@@ -113,7 +114,7 @@ const Indexing = () => {
         },
         body: JSON.stringify({
           fileId: embeddingFile,
-          vectorDb,
+          vectorDb: selectedProvider,
           indexMode
         }),
       });
@@ -121,6 +122,9 @@ const Indexing = () => {
       const data = await response.json();
       setIndexingResult(data);
       setStatus('Indexing completed successfully');
+      
+      // Refresh the collections list so the newly created collection appears
+      fetchCollections();
     } catch (error) {
       console.error('Error indexing:', error);
       setStatus('Error during indexing: ' + error.message);

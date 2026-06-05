@@ -388,8 +388,9 @@ async def get_documents(type: str = Query("all")):
     try:
         documents = []
         
-        # 读取loaded文档
-        if type in ["all", "loaded"]:
+        # 读取loaded文档 和 parsed文档
+        # 因为 parsed 产生的文件也存在 01-loaded-docs 目录下，并且其 loading_method 以 'parsed_' 开头
+        if type in ["all", "loaded", "parsed"]:
             loaded_dir = "01-loaded-docs"
             if os.path.exists(loaded_dir):
                 for filename in os.listdir(loaded_dir):
@@ -397,14 +398,24 @@ async def get_documents(type: str = Query("all")):
                         file_path = os.path.join(loaded_dir, filename)
                         with open(file_path, 'r', encoding='utf-8') as f:
                             doc_data = json.load(f)
+
+                            loading_method = doc_data.get("loading_method", "")
+                            is_parsed = loading_method.startswith("parsed_")
+
+                            # 根据请求的 type 过滤文档
+                            if type == "loaded" and is_parsed:
+                                continue  # 如果只要纯 load 的文档，跳过 parsed 的
+                            if type == "parsed" and not is_parsed:
+                                continue  # 如果只要 parsed 的文档，跳过纯 load 的
+
                             documents.append({
                                 "id": filename,
                                 "name": filename,
-                                "type": "loaded",
+                                "type": "parsed" if is_parsed else "loaded",
                                 "metadata": {
                                     "total_pages": doc_data.get("total_pages"),
                                     "total_chunks": doc_data.get("total_chunks"),
-                                    "loading_method": doc_data.get("loading_method"),
+                                    "loading_method": loading_method,
                                     "chunking_method": doc_data.get("chunking_method"),
                                     "timestamp": doc_data.get("timestamp")
                                 }
@@ -553,7 +564,8 @@ async def delete_embedded_doc(doc_name: str):
 async def parse_file(
     file: UploadFile = File(...),
     loading_method: str = Form(...),
-    parsing_option: str = Form(...)
+    parsing_option: str = Form(...),
+    strategy: str = Form(None)
 ):
     try:
         # Save uploaded file
@@ -566,13 +578,18 @@ async def parse_file(
         metadata = {
             "filename": file.filename,
             "loading_method": loading_method,
+            "loading_strategy": strategy,
             "original_file_size": len(content),
             "processing_date": datetime.now().isoformat(),
             "parsing_method": parsing_option,
         }
         
         loading_service = LoadingService()
-        raw_text = loading_service.load_pdf(temp_path, loading_method)
+        raw_text = loading_service.load_pdf(
+            temp_path, 
+            loading_method,
+            strategy=strategy
+        )
         metadata["total_pages"] = loading_service.get_total_pages()
         
         page_map = loading_service.get_page_map()
@@ -582,13 +599,54 @@ async def parse_file(
             raw_text, 
             parsing_option, 
             metadata,
-            page_map=page_map
+            page_map=page_map,
+            file_path=temp_path
         )
         
+        # 保存解析后的结果到 01-loaded-docs，以便可以用于 chunking
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+        base_name = file.filename.replace('.pdf', '').split('_')[0]
+        doc_name = f"{base_name}_parsed_{parsing_option}_{timestamp}"
+
+        # 构建符合 chunking 服务预期的标准 document 格式
+        # Chunking 服务期望通过 'chunks' 字段找到可分块的内容
+        document_data = {
+            "filename": file.filename,
+            "total_chunks": len(parsed_content["content"]),
+            "total_pages": parsed_content["metadata"]["total_pages"],
+            "loading_method": f"parsed_{parsing_option}", # 使用特殊标记以区分
+            "chunking_method": "loaded",
+            "timestamp": datetime.now().isoformat(),
+            "chunks": [
+                {
+                    "content": item["content"],
+                    "metadata": {
+                        "chunk_id": idx + 1,
+                        "page_number": item["page"],
+                        "page_range": str(item["page"]),
+                        "type": item["type"],
+                        "title": item.get("title", ""),
+                        "word_count": len(item["content"].split())
+                    }
+                }
+                for idx, item in enumerate(parsed_content["content"])
+            ]
+        }
+
+        filepath = os.path.join("01-loaded-docs", f"{doc_name}.json")
+        os.makedirs("01-loaded-docs", exist_ok=True)
+
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(document_data, f, ensure_ascii=False, indent=2)
+
         # Clean up temp file
         os.remove(temp_path)
         
-        return {"parsed_content": parsed_content}
+        return {
+            "parsed_content": parsed_content,
+            "filepath": filepath,
+            "message": "Parsed document saved successfully"
+        }
     except Exception as e:
         logger.error(f"Error parsing file: {str(e)}")
         raise

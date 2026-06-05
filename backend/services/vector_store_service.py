@@ -458,7 +458,7 @@ class VectorStoreService:
                     "embedding_model": embeddings_data.get("embedding_model", ""),  # 从顶层配置获取
                     "embedding_timestamp": str(emb["metadata"].get("embedding_timestamp", "")),
                     "index_mode": str(config._get_chroma_index_type()),
-                    "vector": [float(x) for x in emb.get("embedding", [])],
+                    # Remove "vector" from metadata, Chroma stores embeddings separately
                 }
                 entities.append(entity)
                 collection.add(
