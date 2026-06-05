@@ -19,7 +19,7 @@ backend/02-embedded-docs/
 backend/04-search-results/
 backend/05-generation-results/
 backend/06-evaluation-result/
-# 注意：backend/03-vector-store/chromadb/ 是持久化向量库，需要入库，故不忽略
+backend/03-vector-store/chromadb/
 
 # 操作系统 / 编辑器
 .DS_Store

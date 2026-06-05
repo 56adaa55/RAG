@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import RandomImage from '../components/RandomImage';
 import { apiBaseUrl } from '../config/config';
 
@@ -11,8 +11,19 @@ const Evaluation = () => {
   const [topK, setTopK] = useState(5);
   const [threshold, setThreshold] = useState(0.7);
   const [isEvaluating, setIsEvaluating] = useState(false);
+  const [isDeletingCollection, setIsDeletingCollection] = useState(false);
   const [status, setStatus] = useState('');
   const [evaluationResult, setEvaluationResult] = useState(null);
+
+  const fetchCollections = useCallback(async (provider) => {
+    const collectionsResponse = await fetch(`${apiBaseUrl}/collections?provider=${provider}`);
+    if (!collectionsResponse.ok) {
+      throw new Error(`HTTP error! status: ${collectionsResponse.status}`);
+    }
+    const collectionsData = await collectionsResponse.json();
+    setCollections(collectionsData.collections || []);
+    setCollection('');
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,13 +35,7 @@ const Evaluation = () => {
         const providersData = await providersResponse.json();
         setProviders(providersData.providers || []);
 
-        const collectionsResponse = await fetch(`${apiBaseUrl}/collections?provider=${selectedProvider}`);
-        if (!collectionsResponse.ok) {
-          throw new Error(`HTTP error! status: ${collectionsResponse.status}`);
-        }
-        const collectionsData = await collectionsResponse.json();
-        setCollections(collectionsData.collections || []);
-        setCollection('');
+        await fetchCollections(selectedProvider);
       } catch (error) {
         console.error('Error fetching evaluation data:', error);
         setStatus(`加载集合失败: ${error.message}`);
@@ -38,7 +43,7 @@ const Evaluation = () => {
     };
 
     fetchData();
-  }, [selectedProvider]);
+  }, [selectedProvider, fetchCollections]);
 
   const resultRows = useMemo(() => {
     if (!evaluationResult?.results) return [];
@@ -88,6 +93,41 @@ const Evaluation = () => {
     }
   };
 
+  const handleDeleteCollection = async () => {
+    if (!collection) {
+      setStatus('请选择需要删除的集合');
+      return;
+    }
+
+    if (!window.confirm(`确认删除集合 "${collection}" 吗？`)) {
+      return;
+    }
+
+    setIsDeletingCollection(true);
+    setStatus('');
+
+    try {
+      const response = await fetch(
+        `${apiBaseUrl}/collections/${encodeURIComponent(selectedProvider)}/${encodeURIComponent(collection)}`,
+        { method: 'DELETE' }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      }
+
+      setEvaluationResult(null);
+      setStatus(`集合 "${collection}" 已删除`);
+      await fetchCollections(selectedProvider);
+    } catch (error) {
+      console.error('Delete collection error:', error);
+      setStatus(`删除集合失败: ${error.message}`);
+    } finally {
+      setIsDeletingCollection(false);
+    }
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-blue-500 text-3xl font-bold text-center mb-6"> 检索增强生成工具 </h1>
@@ -128,18 +168,28 @@ const Evaluation = () => {
 
               <div>
                 <label className="block text-sm font-medium mb-1">集合</label>
-                <select
-                  value={collection}
-                  onChange={(e) => setCollection(e.target.value)}
-                  className="block w-full p-2 border rounded"
-                >
-                  <option value="">Choose a collection...</option>
-                  {collections.map(coll => (
-                    <option key={coll.id} value={coll.id}>
-                      {coll.name} ({coll.count} documents)
-                    </option>
-                  ))}
-                </select>
+                <div className="flex gap-2">
+                  <select
+                    value={collection}
+                    onChange={(e) => setCollection(e.target.value)}
+                    className="block min-w-0 flex-1 p-2 border rounded"
+                  >
+                    <option value="">Choose a collection...</option>
+                    {collections.map(coll => (
+                      <option key={coll.id} value={coll.id}>
+                        {coll.name} ({coll.count} documents)
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={handleDeleteCollection}
+                    disabled={!collection || isDeletingCollection || isEvaluating}
+                    className="shrink-0 px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:bg-red-300"
+                  >
+                    {isDeletingCollection ? '删除中' : '删除'}
+                  </button>
+                </div>
               </div>
 
               <div>
