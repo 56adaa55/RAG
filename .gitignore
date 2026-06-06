@@ -25,6 +25,7 @@ Thumbs.db
 # Project data (large temp/binary files)
 temp/*.pdf
 temp/*.txt
+backend/temp/
 01-loaded-docs/
 01-chunked-docs/
 02-embedded-docs/
