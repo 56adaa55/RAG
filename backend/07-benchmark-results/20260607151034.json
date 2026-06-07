@@ -1,0 +1,73 @@
+{
+  "benchmark_id": "20260607151034",
+  "timestamp": "2026-06-07T15:11:01.468108",
+  "embedding_file": "Agent Memory_huggingface_20260607150820.json",
+  "num_vectors": 39,
+  "num_queries": 1,
+  "top_k": 5,
+  "results": [
+    {
+      "preset": "cosine_default",
+      "name": "Cosine 默认参数（基线）",
+      "description": "HNSW + Cosine 距离，M=16, ef_construction=100，作为对比基线",
+      "hnsw_params": {
+        "hnsw:space": "cosine",
+        "hnsw:M": 16,
+        "hnsw:construction_ef": 100,
+        "hnsw:search_ef": 10
+      },
+      "build_time_s": 0.114,
+      "disk_size_mb": 0.0,
+      "num_vectors": 39,
+      "avg_query_latency_ms": 1.32,
+      "p50_latency_ms": 1.32,
+      "p99_latency_ms": 1.41,
+      "min_latency_ms": 1.22,
+      "max_latency_ms": 1.41,
+      "qps": 759.56,
+      "recall_at_k": null
+    },
+    {
+      "preset": "cosine_high_recall",
+      "name": "Cosine 高召回率",
+      "description": "HNSW + Cosine，M=64, ef_construction=500，追求最高召回率",
+      "hnsw_params": {
+        "hnsw:space": "cosine",
+        "hnsw:M": 64,
+        "hnsw:construction_ef": 500,
+        "hnsw:search_ef": 100
+      },
+      "build_time_s": 0.114,
+      "disk_size_mb": 0.0,
+      "num_vectors": 39,
+      "avg_query_latency_ms": 0.61,
+      "p50_latency_ms": 0.59,
+      "p99_latency_ms": 0.69,
+      "min_latency_ms": 0.56,
+      "max_latency_ms": 0.69,
+      "qps": 1631.64,
+      "recall_at_k": null
+    },
+    {
+      "preset": "cosine_high_ef",
+      "name": "Cosine 高构建精度",
+      "description": "HNSW + Cosine，M=16, ef_construction=500，提高构建时的搜索精度",
+      "hnsw_params": {
+        "hnsw:space": "cosine",
+        "hnsw:M": 16,
+        "hnsw:construction_ef": 500,
+        "hnsw:search_ef": 50
+      },
+      "build_time_s": 0.104,
+      "disk_size_mb": 0.0,
+      "num_vectors": 39,
+      "avg_query_latency_ms": 0.74,
+      "p50_latency_ms": 0.74,
+      "p99_latency_ms": 0.75,
+      "min_latency_ms": 0.7,
+      "max_latency_ms": 0.75,
+      "qps": 1359.66,
+      "recall_at_k": null
+    }
+  ]
+}

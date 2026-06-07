@@ -1,0 +1,178 @@
+{
+  "benchmark_id": "20260607151434",
+  "timestamp": "2026-06-07T15:20:03.995126",
+  "embedding_file": "Agent Memory_huggingface_20260607150820.json",
+  "num_vectors": 39,
+  "num_queries": 5,
+  "top_k": 5,
+  "results": [
+    {
+      "preset": "cosine_default",
+      "name": "Cosine 默认参数（基线）",
+      "description": "HNSW + Cosine 距离，M=16, ef_construction=100，作为对比基线",
+      "hnsw_params": {
+        "hnsw:space": "cosine",
+        "hnsw:M": 16,
+        "hnsw:construction_ef": 100,
+        "hnsw:search_ef": 10
+      },
+      "build_time_s": 0.104,
+      "disk_size_mb": 0.0,
+      "num_vectors": 39,
+      "avg_query_latency_ms": 1.24,
+      "p50_latency_ms": 1.24,
+      "p99_latency_ms": 1.59,
+      "min_latency_ms": 0.76,
+      "max_latency_ms": 1.59,
+      "qps": 808.99,
+      "recall_at_k": null
+    },
+    {
+      "preset": "cosine_high_recall",
+      "name": "Cosine 高召回率",
+      "description": "HNSW + Cosine，M=64, ef_construction=500，追求最高召回率",
+      "hnsw_params": {
+        "hnsw:space": "cosine",
+        "hnsw:M": 64,
+        "hnsw:construction_ef": 500,
+        "hnsw:search_ef": 100
+      },
+      "build_time_s": 0.106,
+      "disk_size_mb": 0.0,
+      "num_vectors": 39,
+      "avg_query_latency_ms": 1.17,
+      "p50_latency_ms": 1.19,
+      "p99_latency_ms": 1.39,
+      "min_latency_ms": 1.01,
+      "max_latency_ms": 1.39,
+      "qps": 851.75,
+      "recall_at_k": null
+    },
+    {
+      "preset": "cosine_balanced",
+      "name": "Cosine 平衡型",
+      "description": "HNSW + Cosine，M=32, ef_construction=200，速度与精度均衡",
+      "hnsw_params": {
+        "hnsw:space": "cosine",
+        "hnsw:M": 32,
+        "hnsw:construction_ef": 200,
+        "hnsw:search_ef": 50
+      },
+      "build_time_s": 0.109,
+      "disk_size_mb": 0.0,
+      "num_vectors": 39,
+      "avg_query_latency_ms": 1.22,
+      "p50_latency_ms": 1.22,
+      "p99_latency_ms": 1.35,
+      "min_latency_ms": 1.05,
+      "max_latency_ms": 1.35,
+      "qps": 821.85,
+      "recall_at_k": null
+    },
+    {
+      "preset": "cosine_fast",
+      "name": "Cosine 快速构建/检索",
+      "description": "HNSW + Cosine，M=8, ef_construction=50，最快速度",
+      "hnsw_params": {
+        "hnsw:space": "cosine",
+        "hnsw:M": 8,
+        "hnsw:construction_ef": 50,
+        "hnsw:search_ef": 5
+      },
+      "build_time_s": 0.114,
+      "disk_size_mb": 0.0,
+      "num_vectors": 39,
+      "avg_query_latency_ms": 1.17,
+      "p50_latency_ms": 1.18,
+      "p99_latency_ms": 1.31,
+      "min_latency_ms": 1.05,
+      "max_latency_ms": 1.31,
+      "qps": 852.48,
+      "recall_at_k": null
+    },
+    {
+      "preset": "cosine_high_ef",
+      "name": "Cosine 高构建精度",
+      "description": "HNSW + Cosine，M=16, ef_construction=500，提高构建时的搜索精度",
+      "hnsw_params": {
+        "hnsw:space": "cosine",
+        "hnsw:M": 16,
+        "hnsw:construction_ef": 500,
+        "hnsw:search_ef": 50
+      },
+      "build_time_s": 0.103,
+      "disk_size_mb": 0.0,
+      "num_vectors": 39,
+      "avg_query_latency_ms": 1.13,
+      "p50_latency_ms": 1.15,
+      "p99_latency_ms": 1.28,
+      "min_latency_ms": 0.97,
+      "max_latency_ms": 1.28,
+      "qps": 884.02,
+      "recall_at_k": null
+    },
+    {
+      "preset": "cosine_high_m",
+      "name": "Cosine 高连接度",
+      "description": "HNSW + Cosine，M=64, ef_construction=100，增加图连接密度",
+      "hnsw_params": {
+        "hnsw:space": "cosine",
+        "hnsw:M": 64,
+        "hnsw:construction_ef": 100,
+        "hnsw:search_ef": 50
+      },
+      "build_time_s": 0.113,
+      "disk_size_mb": 0.0,
+      "num_vectors": 39,
+      "avg_query_latency_ms": 1.14,
+      "p50_latency_ms": 1.13,
+      "p99_latency_ms": 1.37,
+      "min_latency_ms": 1.0,
+      "max_latency_ms": 1.37,
+      "qps": 876.74,
+      "recall_at_k": null
+    },
+    {
+      "preset": "l2_default",
+      "name": "L2 距离基线",
+      "description": "HNSW + L2 欧氏距离，M=16, ef_construction=100",
+      "hnsw_params": {
+        "hnsw:space": "l2",
+        "hnsw:M": 16,
+        "hnsw:construction_ef": 100,
+        "hnsw:search_ef": 10
+      },
+      "build_time_s": 0.103,
+      "disk_size_mb": 0.0,
+      "num_vectors": 39,
+      "avg_query_latency_ms": 1.21,
+      "p50_latency_ms": 1.21,
+      "p99_latency_ms": 1.5,
+      "min_latency_ms": 0.96,
+      "max_latency_ms": 1.5,
+      "qps": 827.29,
+      "recall_at_k": null
+    },
+    {
+      "preset": "ip_default",
+      "name": "内积距离基线",
+      "description": "HNSW + Inner Product 内积，M=16, ef_construction=100",
+      "hnsw_params": {
+        "hnsw:space": "ip",
+        "hnsw:M": 16,
+        "hnsw:construction_ef": 100,
+        "hnsw:search_ef": 10
+      },
+      "build_time_s": 0.114,
+      "disk_size_mb": 0.0,
+      "num_vectors": 39,
+      "avg_query_latency_ms": 1.24,
+      "p50_latency_ms": 1.21,
+      "p99_latency_ms": 1.85,
+      "min_latency_ms": 0.94,
+      "max_latency_ms": 1.85,
+      "qps": 805.67,
+      "recall_at_k": null
+    }
+  ]
+}
