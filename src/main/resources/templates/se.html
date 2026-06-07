@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Java-全文搜索</title>
+    <!-- 可以在此处保留原来的css，也可以直接使用下面的内嵌现代样式 -->
+    <style>
+        /* ====== 全局与基础样式 ====== */
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f4f6f9; /* 浅灰色背景，突出搜索卡片 */
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ====== 头部搜索区 ====== */
+        .search-header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .search-header img {
+            max-width: 280px;
+            margin-bottom: 30px;
+        }
+
+        /* 现代化搜索框 */
+        .search-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(24, 144, 255, 0.15);
+            border-radius: 30px;
+            overflow: hidden;
+            background: #fff;
+            max-width: 650px;
+            margin: 0 auto;
+            border: 2px solid #1890ff;
+        }
+        .search-box input {
+            border: none;
+            padding: 16px 25px;
+            font-size: 16px;
+            flex: 1;
+            outline: none;
+            color: #333;
+        }
+        .search-box button {
+            border: none;
+            background: #1890ff;
+            color: #fff;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .search-box button:hover {
+            background: #096dd9;
+        }
+
+        /* ====== 结果列表区 ====== */
+        .results-count {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        /* 卡片样式 */
+        .result-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            border-left: 4px solid #1890ff;
+            display: flex;
+            flex-direction: column;
+        }
+        .result-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        /* 标题行 */
+        .result-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            line-height: 1.4;
+        }
+        .result-index {
+            color: #b0b0b0;
+            font-size: 18px;
+            margin-right: 12px;
+            font-style: italic;
+            min-width: 25px;
+        }
+        .result-title a {
+            text-decoration: none;
+            color: #1890ff;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .result-title a:hover {
+            color: #ff4d4f; /* 鼠标悬浮变红，知乎风格 */
+            text-decoration: underline;
+        }
+
+        /* 底部元数据(标签) */
+        .result-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-left: 37px; /* 与标题文字对齐 */
+        }
+        .answer-snippet {
+            color: #555;
+            font-size: 15px;
+            line-height: 1.7;
+            margin: 0 0 14px 37px;
+        }
+        .answer-snippet em,
+        .result-title em {
+            color: #ff4d4f;
+            font-style: normal;
+            font-weight: 700;
+        }
+        .tag-type {
+            background: #fff7e6;
+            color: #d46b08;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .tag-domain {
+            background: #e6f7ff;
+            color: #096dd9;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .tag-id {
+            background: #f5f5f5;
+            color: #888;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .tag-score {
+            background: #f6ffed;
+            color: #389e0d;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        /* 无数据提示 */
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 50px 0;
+            font-size: 16px;
+        }
+
+        .search-tips {
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            margin-top: 15px;
+        }
+        .search-tips code {
+            background: #f0f2f5;
+            padding: 3px 6px;
+            border-radius: 4px;
+            color: #ff4d4f;
+            font-family: Consolas, monospace;
+            margin: 0 2px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+
+    <!-- 1. 现代化头部搜索区 -->
+    <div class="search-header">
+        <img th:src="@{/images/selogo.png}" alt="Logo">
+        <div class="search-box">
+            <!-- 增加了 @keyup.enter 实现回车直接搜索 -->
+            <input v-model="keyword" type="text" placeholder="请输入你要搜索的内容，例如：激活函数..." @keyup.enter="searchPage">
+            <button @click.prevent="searchPage">搜 索</button>
+        </div>
+        <!-- ================= 新增：逻辑查询提示 ================= -->
+        <div class="search-tips">
+            <strong>💡 高级逻辑查询支持：</strong>
+            <code>+</code> 必须包含 (如: <code>Java +多线程</code>) |
+            <code>|</code> 或者 (如: <code>前端 | 后端</code>) |
+            <code>-</code> 排除 (如: <code>Python -爬虫</code>) |
+            <code>" "</code> 精确短语
+        </div>
+        <!-- =================================================== -->
+    </div>
+
+    <!-- 2. 结果详情展示区 -->
+    <div class="container">
+        
+        <!-- 搜索结果数量统计 (只有在有结果时显示) -->
+        <div class="results-count" v-if="results.length > 0">
+            为您找到 <strong>{{ results.length }}</strong> 条与 "<strong>{{ keyword }}</strong>" 相关的结果：
+        </div>
+
+        <!-- 初始空状态提示 -->
+        <div class="empty-state" v-if="results.length === 0 && keyword === ''">
+            👆 请在上方输入关键词开始检索
+        </div>
+
+        <!-- 卡片化循环渲染结果 -->
+        <div class="result-card" v-for="(item, i) in results" :key="i">
+            <div class="result-title">
+                <!-- 序号 i+1 保证从 1 开始显示 -->
+                <span class="result-index">{{ i + 1 }}.</span>
+                <!-- 标题点击事件，跳转到答案页 -->
+                <a @click.prevent="searchId(item)" v-html="item.titleHtml || item.qzh"></a>
+            </div>
+            
+            <div class="answer-snippet" v-if="item.resultType === 'answer' && item.snippetHtml" v-html="item.snippetHtml"></div>
+
+            <div class="result-meta">
+                <span class="tag-type">{{ resultTypeText(item) }}</span>
+                <span class="tag-domain" v-if="item.qdomain">领域: {{ item.qdomain }}</span>
+                <span class="tag-id" v-if="item.qid">问题序号: {{ item.qid }}</span>
+                <span class="tag-id" v-if="item.resultType === 'answer' && item.aid">答案源号: {{ item.aid }}</span>
+                <span class="tag-score" v-if="item.score">score: {{ Number(item.score).toFixed(3) }}</span>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 引入 Vue 和 Axios -->
+<script src="./js/vue.min.js"></script>
+<script src="./js/axios.min.js"></script>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            keyword: "",  // 搜索关键字
+            results: []   // 搜索结果
+        },
+        methods: {
+            searchPage() {
+                if (!this.keyword.trim()) {
+                    alert("请输入搜索关键词！");
+                    return;
+                }
+                console.info("搜索关键词: " + this.keyword);
+                
+                axios.request({
+                    method: "POST",
+                    url: "/queryAll",
+                    params: {
+                        keyword: this.keyword,
+                        pageNo: 1,
+                        pageSize: 100 // 前端要求后端返回100条供展示
+                    }
+                }).then(response => {
+                    this.results = response.data;
+                }).catch(error => {
+                    console.error("搜索请求失败: ", error);
+                    alert("搜索失败，请检查后端服务是否正常。");
+                });
+            },
+            resultTypeText(item) {
+                return item.resultType === "answer" ? "答案" : "问题";
+            },
+            searchId(item) {
+                if (!item.qid) {
+                    return;
+                }
+                // 点击跳转到答案详情页面
+                window.location.href = "/searchAn/" + item.qid;
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
