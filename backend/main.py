@@ -15,6 +15,9 @@ from utils.config import VectorDBProvider
 import pandas as pd
 from pathlib import Path
 from services.generation_service import GenerationService
+from services.index_benchmark_service import IndexBenchmarkService
+from services.query_optimizer import QueryOptimizer
+from services.post_retrieval import PostRetrievalOptimizer
 from typing import List, Dict, Optional
 
 # 设置日志
@@ -1042,4 +1045,198 @@ async def get_search_result(file_id: str):
             
     except Exception as e:
         logger.error(f"Error reading search result file: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e)) 
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ================================================================
+# 索引对比分析 API（新增）
+# ================================================================
+
+@app.get("/index-presets")
+async def get_index_presets():
+    """获取可用的 Chroma HNSW 索引预设配置列表"""
+    try:
+        service = IndexBenchmarkService()
+        presets = service.get_available_presets()
+        return {"presets": presets}
+    except Exception as e:
+        logger.error(f"Error getting index presets: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/index-benchmark")
+async def run_index_benchmark(data: dict = Body(...)):
+    """
+    运行索引对比基准测试
+
+    请求体:
+        embedding_file: str — 嵌入文件名
+        test_queries: List[str] — 测试查询列表
+        presets: Optional[List[str]] — 要测试的预设名称列表
+        top_k: int = 5
+    """
+    try:
+        embedding_file = data.get("embedding_file")
+        test_queries = data.get("test_queries", [])
+        presets = data.get("presets", None)
+        top_k = data.get("top_k", 5)
+
+        if not embedding_file:
+            raise ValueError("Missing embedding_file")
+        if not test_queries:
+            raise ValueError("Missing test_queries")
+
+        service = IndexBenchmarkService()
+        result = service.run_benchmark(
+            embedding_file=embedding_file,
+            test_queries=test_queries,
+            presets=presets,
+            top_k=top_k,
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Error running index benchmark: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/benchmark-results")
+async def list_benchmark_results():
+    """列出所有历史索引对比结果"""
+    try:
+        service = IndexBenchmarkService()
+        results = service.list_benchmark_results()
+        return {"results": results}
+    except Exception as e:
+        logger.error(f"Error listing benchmark results: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/benchmark-results/{benchmark_id}")
+async def get_benchmark_result(benchmark_id: str):
+    """获取特定索引对比结果详情"""
+    try:
+        service = IndexBenchmarkService()
+        result = service.get_benchmark_result(benchmark_id)
+        return result
+    except Exception as e:
+        logger.error(f"Error getting benchmark result: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ================================================================
+# 检索优化 API（新增）
+# ================================================================
+
+@app.get("/optimization-options")
+async def get_optimization_options():
+    """获取可用的检索前/后优化策略列表"""
+    return {
+        "pre_retrieval": [
+            {"id": "rewrite", "name": "Query Rewriting", "description": "用 LLM 将问题改写为更精准的检索查询"},
+            {"id": "expand", "name": "Query Expansion", "description": "生成多个查询变体提高召回率"},
+            {"id": "hyde", "name": "HyDE", "description": "先生成假设性答案，用答案做向量检索"},
+            {"id": "decompose", "name": "Multi-Query", "description": "将复杂问题拆解为多个子查询"},
+        ],
+        "post_retrieval": [
+            {"id": "rerank", "name": "Cross-Encoder Rerank", "description": "用 Cross-Encoder 模型精确重排序"},
+            {"id": "mmr", "name": "MMR Diversity", "description": "最大边际相关性，平衡相关性与多样性"},
+            {"id": "deduplicate", "name": "Deduplication", "description": "基于语义相似度去除重复内容块"},
+            {"id": "filter", "name": "Relevance Filter", "description": "用 LLM 过滤不相关的检索结果"},
+            {"id": "compress", "name": "Context Compression", "description": "用 LLM 压缩提炼上下文"},
+        ],
+    }
+
+
+@app.post("/search-optimized")
+async def search_optimized(data: dict = Body(...)):
+    """
+    带检索前/后优化的增强搜索
+
+    请求体:
+        query: str
+        collection_id: str
+        top_k: int = 5
+        threshold: float = 0.7
+        pre_strategies: List[str] = []  — ["rewrite", "expand", "hyde", "decompose"]
+        post_strategies: List[str] = [] — ["rerank", "mmr", "deduplicate", "filter"]
+        llm_provider: str = "deepseek"
+        llm_model: str = "deepseek-chat"
+    """
+    try:
+        query = data.get("query")
+        collection_id = data.get("collection_id")
+        top_k = data.get("top_k", 5)
+        threshold = data.get("threshold", 0.7)
+        pre_strategies = data.get("pre_strategies", [])
+        post_strategies = data.get("post_strategies", [])
+        llm_provider = data.get("llm_provider", "deepseek")
+        llm_model = data.get("llm_model", "deepseek-chat")
+
+        if not query or not collection_id:
+            raise ValueError("Missing query or collection_id")
+
+        query_optimizer = QueryOptimizer()
+        post_optimizer = PostRetrievalOptimizer()
+        search_service = SearchService()
+
+        optimization_log = {}
+        effective_query = query
+
+        # ---- 检索前优化 ----
+        if pre_strategies:
+            pre_result = await query_optimizer.optimize(
+                query=query,
+                strategies=pre_strategies,
+                provider=llm_provider,
+                model=llm_model,
+            )
+            optimization_log["pre"] = pre_result["strategy_results"]
+
+            # HyDE 策略：用假设性答案作为检索查询
+            if "hyde" in pre_strategies and "hyde" in pre_result["strategy_results"]:
+                effective_query = pre_result["strategy_results"]["hyde"]
+            # Rewrite 策略：使用改写后的查询
+            elif "rewrite" in pre_strategies and "rewrite" in pre_result["strategy_results"]:
+                effective_query = pre_result["strategy_results"]["rewrite"]
+
+            # Expand / Decompose：使用第一个变体
+            if pre_result["optimized_queries"]:
+                effective_query = pre_result["optimized_queries"][0]
+
+        # ---- 执行搜索 ----
+        search_result = await search_service.search(
+            query=effective_query,
+            collection_id=collection_id,
+            top_k=top_k * 2 if post_strategies else top_k,  # 多取一些供后优化筛选
+            threshold=threshold,
+        )
+        raw_results = search_result.get("results", [])
+
+        # ---- 检索后优化 ----
+        if post_strategies and raw_results:
+            post_result = await post_optimizer.optimize(
+                query=query,
+                results=raw_results,
+                strategies=post_strategies,
+                top_k=top_k,
+                provider=llm_provider,
+                model=llm_model,
+            )
+            optimization_log["post"] = {
+                "steps_applied": post_result["steps_applied"],
+                "original_count": post_result["original_count"],
+                "optimized_count": post_result["optimized_count"],
+            }
+            final_results = post_result["optimized_results"]
+        else:
+            final_results = raw_results[:top_k]
+
+        return {
+            "original_query": query,
+            "effective_query": effective_query,
+            "optimization_log": optimization_log,
+            "results": final_results,
+        }
+
+    except Exception as e:
+        logger.error(f"Error in optimized search: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
